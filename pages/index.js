@@ -19,7 +19,7 @@ export default function Home() {
   }, []);
 
   return (
-    <Layout title="Choose Hostinger and Host Your Site for Only ₹129.00/mo">
+    <Layout title="Choose Hostier and Host Your Site for Only $25.00/mo">
       <Hero />
       <Pricing />
       <FindDomain />
