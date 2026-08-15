@@ -136,10 +136,6 @@ const Header = () => {
               <path d="M0.000249566 14.046V0.000497794L7.08916 3.78046V10.1086L16.4735 10.1132L23.6774 14.046H0.000249566ZM18.3925 8.95058V0L25.6725 3.6859V13.1797L18.3925 8.95058ZM18.3924 26.1177V19.8441L8.93577 19.8375C8.9446 19.8793 1.6123 15.8418 1.6123 15.8418L25.6725 15.9547V30L18.3924 26.1177ZM0 26.1177L0.000252212 16.9393L7.08916 21.0683V29.8033L0 26.1177Z" />
             </svg>
           </Link>
-          <div className="hidden md:flex items-center justify-between gap-2 text-xl">
-            <img src="/assets/india.png" alt="" className="h-8 " />
-            <p>English</p>
-          </div>
           <div>{renderThemeChanger()}</div>
         </div>
         <div
@@ -321,7 +317,7 @@ const Header = () => {
                             Google Workspace Email Hosting
                           </li>
                           <li className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary">
-                            Hostinger Email Hosting
+                            Hostier Email Hosting
                           </li>
                         </ul>
                       </Disclosure.Panel>
