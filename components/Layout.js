@@ -6,10 +6,10 @@ const Layout = ({ title, children }) => {
   return (
     <>
       <Head>
-        <title>{title ? title + " - Hostinger" : "Hostinger"}</title>
+        <title>{title ? title + " - Hostier" : "Hostier"}</title>
         <meta
           name="description"
-          content="Go online with Hostinger, make your perfect website today. Check our plans and their features. We have all you need for online success."
+          content="Go online with Hostier, make your perfect website today. Check our plans and their features. We have all you need for online success."
         />
         <meta
           name="keywords"
