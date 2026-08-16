@@ -32,7 +32,7 @@ export default function HeaderPop() {
             <div className=" h-5 w-5 bg-white dark:bg-lightGray rotate-45 transform origin-bottom-left"></div>
           </div>
           <div className="">
-            <Menu.Item>
+            <Menu.Item as="div">
               <Link href="/hosting/web-hosting" passHref>
                 <a>
                   <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer">
@@ -47,7 +47,7 @@ export default function HeaderPop() {
                 </a>
               </Link>
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item as="div">
               <Link href="/hosting/cloud-hosting" passHref>
                 <a>
                   <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer">
@@ -62,7 +62,7 @@ export default function HeaderPop() {
                 </a>
               </Link>
             </Menu.Item>
-<Menu.Item>
+<Menu.Item as="div">
               <Link href="/hosting/wordpress-hosting" passHref>
                 <a>
                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer">
