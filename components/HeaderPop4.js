@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment } from "react";
+import { useRouter } from "next/router";
 import { Menu, Transition } from "@headlessui/react";
 import { HiChevronDown } from "react-icons/hi";
 
@@ -8,12 +9,22 @@ function classNames(...classes) {
 }
 
 export default function HeaderPop4() {
+  const router = useRouter();
+  const isActive = router.pathname.startsWith("/domain");
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="cursor-pointer flex justify-center items-center mr-1 focus:outline-none focus-visible:ring-0 text-xl">
+        <Menu.Button
+          className={`relative cursor-pointer flex justify-center items-center mr-1 focus:outline-none focus-visible:ring-0 text-xl transition-colors duration-200 ${
+            isActive ? "text-primary dark:text-primary font-bold" : ""
+          }`}
+        >
           Domain
           <HiChevronDown className="text-2xl " />
+          {isActive && (
+            <span className="absolute -bottom-2 left-0 right-6 h-[3px] rounded-full bg-primary" />
+          )}
         </Menu.Button>
       </div>
 
@@ -26,53 +37,59 @@ export default function HeaderPop4() {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute -right-44 z-10 mt-4 w-[28rem] py-6 px-10 origin-top-right rounded bg-white dark:bg-lightGray shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ">
+        <Menu.Items className="absolute right-0 sm:-right-44 z-10 mt-4 w-[90vw] max-w-md sm:w-[28rem] py-6 px-6 sm:px-10 origin-top-right rounded bg-white dark:bg-lightGray shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ">
           <div className="w-16 absolute top-0 right-40 -mt-5 overflow-hidden inline-block">
             <div className=" h-5 w-5 bg-white dark:bg-lightGray rotate-45 transform origin-bottom-left"></div>
           </div>
           <div className="">
             <Menu.Item>
-              <a href="#">
-                <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
-                  <img src="/assets/icons/Domain.svg" alt="" />
-                  <div>
-                    <h4 className=" text-xl md:text-xl font-extrabold ">
-                      Domain Name Search
-                    </h4>
-                    <p className="capitalize">Find the perfect domain name </p>
-                  </div>
+              <button
+                type="button"
+                onClick={() => router.push("/domain/domain-search")}
+                className="flex w-full my-6 justify-start items-center gap-5 text-left bg-transparent border-0 p-0 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
+              >
+                <img src="/assets/icons/Domain.svg" alt="" />
+                <div>
+                  <h4 className=" text-xl md:text-xl font-extrabold ">
+                    Domain Name Search
+                  </h4>
+                  <p className="capitalize">Find the perfect domain name </p>
                 </div>
-              </a>
+              </button>
             </Menu.Item>
             <Menu.Item>
-              <a href="#">
-                <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
-                  <img src="/assets/icons/WHOIS.svg" alt="" />
-                  <div>
-                    <h4 className=" text-xl md:text-xl font-extrabold ">
-                      WHOIS Lookup
-                    </h4>
-                    <p className="capitalize">
-                      Lookup tool to find WHOIS information
-                    </p>
-                  </div>
+              <button
+                type="button"
+                onClick={() => router.push("/domain/whois-lookup")}
+                className="flex w-full my-6 justify-start items-center gap-5 text-left bg-transparent border-0 p-0 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
+              >
+                <img src="/assets/icons/WHOIS.svg" alt="" />
+                <div>
+                  <h4 className=" text-xl md:text-xl font-extrabold ">
+                    WHOIS Lookup
+                  </h4>
+                  <p className="capitalize">
+                    Lookup tool to find WHOIS information
+                  </p>
                 </div>
-              </a>
+              </button>
             </Menu.Item>
             <Menu.Item>
-              <a href="#">
-                <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
-                  <img src="/assets/icons/Transfer.svg" alt="" />
-                  <div>
-                    <h4 className=" text-xl md:text-xl font-extrabold ">
-                      Domain Transfer
-                    </h4>
-                    <p className="capitalize">
-                      Want to transfer domain to hostinger
-                    </p>
-                  </div>
+              <button
+                type="button"
+                onClick={() => router.push("/domain/domain-transfer")}
+                className="flex w-full my-6 justify-start items-center gap-5 text-left bg-transparent border-0 p-0 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
+              >
+                <img src="/assets/icons/Transfer.svg" alt="" />
+                <div>
+                  <h4 className=" text-xl md:text-xl font-extrabold ">
+                    Domain Transfer
+                  </h4>
+                  <p className="capitalize">
+                    Want to transfer domain to hostinger
+                  </p>
                 </div>
-              </a>
+              </button>
             </Menu.Item>
           </div>
         </Menu.Items>
