@@ -13,7 +13,7 @@ export default function FindDomain() {
     setResults([]);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/domain-search?domain=${encodeURIComponent(query)}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domain-search?domain=${encodeURIComponent(query)}`
       );
       const data = await res.json();
       const parsed = Object.entries(data).map(([tld, info]) => ({
