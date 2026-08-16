@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { HiOutlineTrash, HiOutlineShoppingCart } from "react-icons/hi";
+import Header from "../sections/Header";
 
 const initialItems = [
   { id: 1, name: "Web Hosting - Starter", price: 5.99, qty: 1 },
@@ -28,8 +29,10 @@ const CartScreen = () => {
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-darkGray text-black dark:text-white px-5 md:px-10 py-10">
-      <h1 className="text-3xl font-extrabold mb-8">Your Cart</h1>
+    <>
+      <Header />
+      <div className="min-h-screen bg-white dark:bg-darkGray text-black dark:text-white px-5 md:px-10 py-10">
+        <h1 className="text-3xl font-extrabold mb-8">Your Cart</h1>
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -99,7 +102,7 @@ const CartScreen = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
-
 export default CartScreen;
