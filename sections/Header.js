@@ -182,11 +182,13 @@ const Header = () => {
           data-aos-duration="300"
           className="flex md:hidden gap-4"
         >
-          <button className="flex justify-center items-center gap-3 rounded-full">
-            <div>
-              <HiOutlineShoppingCart className="text-2xl" />
-            </div>
-          </button>
+          <Link href={"/cart"}>
+            <button className="flex justify-center items-center gap-3 rounded-full">
+              <div>
+                <HiOutlineShoppingCart className="text-2xl" />
+              </div>
+            </button>
+          </Link>
           <button className="flex justify-center items-center gap-3 rounded-full">
             <div>
               {isOpen ? (
