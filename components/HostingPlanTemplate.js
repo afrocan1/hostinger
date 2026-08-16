@@ -188,7 +188,7 @@ export default function HostingPlanTemplate({
             >
               <Card
                 className={`relative border-neutral-200 ${
-                  plan.popular ? "ring-2 ring-primary bg-primary" : "bg-white "
+                  plan.popular ? "ring-2 ring-primary bg-primary/5" : "bg-white "
                 }`}
               >
                 <CardHeader className="text-left">
