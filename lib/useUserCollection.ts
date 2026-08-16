@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import db from "@/lib/firebase";
+const db = getFirestore(app);
 import { useAuth } from "@/lib/AuthContext";
 
 export function useUserCollection<T = any>(subcollection: string) {
