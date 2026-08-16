@@ -35,7 +35,7 @@ export default function HeaderPop() {
             <Menu.Item>
               <Link href="/hosting/web-hosting" passHref>
                 <a>
-                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
+                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer">
                     <img src="/assets/icons/Web Hosting.svg" alt="" />
                     <div>
                       <h4 className=" text-xl md:text-xl font-extrabold ">
@@ -50,7 +50,7 @@ export default function HeaderPop() {
             <Menu.Item>
               <Link href="/hosting/cloud-hosting" passHref>
                 <a>
-                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
+                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer">
                     <img src="/assets/icons/Cloud.svg" alt="" />
                     <div>
                       <h4 className=" text-xl md:text-xl font-extrabold ">
@@ -65,7 +65,7 @@ export default function HeaderPop() {
 <Menu.Item>
               <Link href="/hosting/wordpress-hosting" passHref>
                 <a>
-                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
+                 <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer">
                     <img src="/assets/icons/Wordpress.svg" alt="" />
                     <div>
                       <h4 className=" text-xl md:text-xl font-extrabold ">
