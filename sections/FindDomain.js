@@ -17,6 +17,12 @@ export default function FindDomain() {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domain-search?domain=${encodeURIComponent(cleanQuery)}`
       );
       const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.detail || data.error || "Search failed. Try again.");
+        return;
+      }
+
       const parsed = Object.entries(data).map(([tld, info]) => ({
         tld,
         status: info.status,
