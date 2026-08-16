@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 
-type DomainResult = { tld: string; status: string };
-
 export default function FindDomain() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<DomainResult[]>([]);
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -18,7 +16,7 @@ export default function FindDomain() {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/domain-search?domain=${encodeURIComponent(query)}`
       );
       const data = await res.json();
-      const parsed: DomainResult[] = Object.entries(data).map(([tld, info]: [string, any]) => ({
+      const parsed = Object.entries(data).map(([tld, info]) => ({
         tld,
         status: info.status,
       }));
