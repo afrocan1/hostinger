@@ -34,9 +34,10 @@ export default function HeaderPop() {
           </div>
           <div className="">
             <Menu.Item>
-              <div
+              <button
+                type="button"
                 onClick={() => router.push("/hosting/web-hosting")}
-                className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
+                className="flex w-full my-6 justify-start items-center gap-5 text-left bg-transparent border-0 p-0 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
               >
                 <img src="/assets/icons/Web Hosting.svg" alt="" />
                 <div>
@@ -45,12 +46,13 @@ export default function HeaderPop() {
                   </h4>
                   <p className="capitalize">For Small to medium website</p>
                 </div>
-              </div>
+              </button>
             </Menu.Item>
             <Menu.Item>
-              <div
+              <button
+                type="button"
                 onClick={() => router.push("/hosting/cloud-hosting")}
-                className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
+                className="flex w-full my-6 justify-start items-center gap-5 text-left bg-transparent border-0 p-0 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
               >
                 <img src="/assets/icons/Cloud.svg" alt="" />
                 <div>
@@ -59,23 +61,24 @@ export default function HeaderPop() {
                   </h4>
                   <p className="capitalize">For Large scale projects</p>
                 </div>
-              </div>
+              </button>
             </Menu.Item>
 <Menu.Item>
-              <div
+              <button
+                type="button"
                 onClick={() => router.push("/hosting/wordpress-hosting")}
-                className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
+                className="flex w-full my-6 justify-start items-center gap-5 text-left bg-transparent border-0 p-0 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
               >
                 <img src="/assets/icons/Wordpress.svg" alt="" />
                 <div>
                   <h4 className=" text-xl md:text-xl font-extrabold ">
                     Wordpress Hosting
                   </h4>
-                  <p className="capitalize">
+                 <p className="capitalize">
                     Optimized solutions for Wordpress Hosting
                   </p>
                 </div>
-              </div>
+              </button>
             </Menu.Item>
           </div>
         </Menu.Items>
