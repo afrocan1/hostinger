@@ -18,9 +18,6 @@ const CustomLogo = () => (
 );
 export default function CustomAuthDemo() {
   return (
-    <AuthComponent 
-      logo={<CustomLogo />} 
-      brandName="MyWebApp" 
-    />
+    <AuthComponent />
   );
 }
