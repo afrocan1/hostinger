@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment } from "react";
+import Link from "next/link";
 import { Menu, Transition } from "@headlessui/react";
 import { HiChevronDown } from "react-icons/hi";
 
@@ -45,7 +46,7 @@ export default function HeaderPop() {
               </a>
             </Menu.Item>
             <Menu.Item>
-              <a href="/hosting/cloud-hosting">
+              <Link href="/hosting/cloud-hosting">
                 <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
                   <img src="/assets/icons/Cloud.svg" alt="" />
                   <div>
@@ -55,10 +56,10 @@ export default function HeaderPop() {
                     <p className="capitalize">For Large scale projects</p>
                   </div>
                 </div>
-              </a>
+              </Link>
             </Menu.Item>
             <Menu.Item>
-              <a href="/hosting/wordpress-hosting">
+              <Link href="/hosting/wordpress-hosting">
                 <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
                   <img src="/assets/icons/Wordpress.svg" alt="" />
                   <div>
@@ -70,7 +71,7 @@ export default function HeaderPop() {
                     </p>
                   </div>
                 </div>
-              </a>
+              </Link>
             </Menu.Item>
           </div>
         </Menu.Items>
