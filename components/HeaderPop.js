@@ -33,44 +33,50 @@ export default function HeaderPop() {
           </div>
           <div className="">
             <Menu.Item>
-              <a href="/hosting/web-hosting">
-                <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
-                  <img src="/assets/icons/Web Hosting.svg" alt="" />
-                  <div>
-                    <h4 className=" text-xl md:text-xl font-extrabold ">
-                      Web Hosting
-                    </h4>
-                    <p className="capitalize">For Small to medium website</p>
+              <Link href="/hosting/web-hosting" passHref>
+                <a>
+                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
+                    <img src="/assets/icons/Web Hosting.svg" alt="" />
+                    <div>
+                      <h4 className=" text-xl md:text-xl font-extrabold ">
+                        Web Hosting
+                      </h4>
+                      <p className="capitalize">For Small to medium website</p>
+                    </div>
                   </div>
-                </div>
-              </a>
-            </Menu.Item>
-            <Menu.Item>
-              <Link href="/hosting/cloud-hosting">
-                <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
-                  <img src="/assets/icons/Cloud.svg" alt="" />
-                  <div>
-                    <h4 className=" text-xl md:text-xl font-extrabold ">
-                      Cloud Hosting
-                    </h4>
-                    <p className="capitalize">For Large scale projects</p>
-                  </div>
-                </div>
+                </a>
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <Link href="/hosting/wordpress-hosting">
-                <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
-                  <img src="/assets/icons/Wordpress.svg" alt="" />
-                  <div>
-                    <h4 className=" text-xl md:text-xl font-extrabold ">
-                      Wordpress Hosting
-                    </h4>
-                    <p className="capitalize">
-                      Optimized solutions for Wordpress Hosting
-                    </p>
+              <Link href="/hosting/cloud-hosting" passHref>
+                <a>
+                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
+                    <img src="/assets/icons/Cloud.svg" alt="" />
+                    <div>
+                      <h4 className=" text-xl md:text-xl font-extrabold ">
+                        Cloud Hosting
+                      </h4>
+                      <p className="capitalize">For Large scale projects</p>
+                    </div>
                   </div>
-                </div>
+                </a>
+              </Link>
+            </Menu.Item>
+<Menu.Item>
+              <Link href="/hosting/wordpress-hosting" passHref>
+                <a>
+                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
+                    <img src="/assets/icons/Wordpress.svg" alt="" />
+                    <div>
+                      <h4 className=" text-xl md:text-xl font-extrabold ">
+                        Wordpress Hosting
+                      </h4>
+                      <p className="capitalize">
+                        Optimized solutions for Wordpress Hosting
+                      </p>
+                    </div>
+                  </div>
+                </a>
               </Link>
             </Menu.Item>
           </div>
