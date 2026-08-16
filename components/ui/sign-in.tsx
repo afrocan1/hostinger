@@ -4,6 +4,9 @@ import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle, us
 import { cva, type VariantProps } from "class-variance-authority";
 import { ArrowRight, Mail, Lock, Eye, EyeOff, ArrowLeft, X, AlertCircle, PartyPopper, Loader } from "lucide-react";
 import { AnimatePresence, motion, useInView, Variants, Transition } from "framer-motion";
+import { useRouter } from "next/router";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider, getAuthErrorMessage } from "@/lib/firebase";
 
 import type { GlobalOptions as ConfettiGlobalOptions, CreateTypes as ConfettiInstance, Options as ConfettiOptions } from "canvas-confetti"
 import confetti from "canvas-confetti"
@@ -143,6 +146,7 @@ const TEXT_LOOP_INTERVAL = 1.5;
 interface SignInComponentProps {}
 
 export const SignInComponent = ({}: SignInComponentProps) => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -166,21 +170,43 @@ export const SignInComponent = ({}: SignInComponentProps) => {
     }
   };
 
-  const handleFinalSubmit = (e: React.FormEvent) => {
+  const handleFinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (modalStatus !== 'closed' || authStep !== 'password') return;
 
     if (!isPasswordValid) {
         setModalErrorMessage("Incorrect email or password.");
         setModalStatus('error');
-    } else {
-        setModalStatus('loading');
-        const loadingStepsCount = modalSteps.length - 1;
-        const totalDuration = loadingStepsCount * TEXT_LOOP_INTERVAL * 1000;
+        return;
+    }
+
+    setModalStatus('loading');
+    const loadingStepsCount = modalSteps.length - 1;
+    const minDuration = loadingStepsCount * TEXT_LOOP_INTERVAL * 1000;
+    const startTime = Date.now();
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        const elapsed = Date.now() - startTime;
         setTimeout(() => {
             fireSideCanons();
             setModalStatus('success');
-        }, totalDuration);
+            setTimeout(() => router.push('/dashboard'), 1200);
+        }, Math.max(minDuration - elapsed, 0));
+    } catch (error: any) {
+        setModalErrorMessage(getAuthErrorMessage(error?.code));
+        setModalStatus('error');
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+        await signInWithPopup(auth, googleProvider);
+        fireSideCanons();
+        router.push('/dashboard');
+    } catch (error: any) {
+        setModalErrorMessage(getAuthErrorMessage(error?.code));
+        setModalStatus('error');
     }
   };
 
@@ -272,7 +298,7 @@ export const SignInComponent = ({}: SignInComponentProps) => {
                         <BlurFade delay={0.25 * 1} className="w-full"><div className="text-center"><p className="font-serif font-light text-4xl sm:text-5xl md:text-6xl tracking-tight text-foreground whitespace-nowrap">Welcome back</p></div></BlurFade>
                         <BlurFade delay={0.25 * 2}><p className="text-sm font-medium text-muted-foreground">Continue with</p></BlurFade>
                         <BlurFade delay={0.25 * 3}><div className="flex items-center justify-center gap-4 w-full">
-                            <GlassButton contentClassName="flex items-center justify-center gap-2" size="sm"><GoogleIcon /><span className="font-semibold text-foreground">Google</span></GlassButton>
+                            <GlassButton type="button" onClick={handleGoogleSignIn} contentClassName="flex items-center justify-center gap-2" size="sm"><GoogleIcon /><span className="font-semibold text-foreground">Google</span></GlassButton>
                         </div></BlurFade>
                         <BlurFade delay={0.25 * 4} className="w-[300px]"><div className="flex items-center w-full gap-2 py-2"><hr className="w-full border-border"/><span className="text-xs font-semibold text-muted-foreground">OR</span><hr className="w-full border-border"/></div></BlurFade>
                     </motion.div>}
