@@ -167,6 +167,11 @@ const Header = () => {
               Log In
             </button>
           </Link>
+          <Link href={"/signup"}>
+            <button className="flex justify-center items-center gap-3 rounded-full border border-white py-1 px-5 text-xl">
+              Sign Up
+            </button>
+          </Link>
           <Link href={"/cart"}>
             <button className="flex  text-xl justify-center items-center gap-3">
               <div>
@@ -438,6 +443,14 @@ const Header = () => {
                   <MdLockOutline className="text-2xl" />
                 </div>
                 <span className=" ">Log In</span>
+              </button>
+            </Link>
+            <Link href={"/signup"}>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="mt-3 flex justify-center items-center gap-3 rounded-full bg-primary w-10/12 mx-auto py-3 px-5 font-bold text-white transition duration-300 ease-out"
+              >
+                <span>Sign Up</span>
               </button>
             </Link>
           </div>
