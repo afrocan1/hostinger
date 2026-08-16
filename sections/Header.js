@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { Disclosure, Popover } from "@headlessui/react";
 import { FaAngleDown } from "react-icons/fa";
 import HeaderPop from "../components/HeaderPop";
@@ -21,6 +22,7 @@ import HeaderPop4 from "../components/HeaderPop4";
 import Link from "next/link";
 
 const Header = () => {
+  const router = useRouter();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -233,13 +235,31 @@ const Header = () => {
                     <dd className="w-full text-base text-black px-3">
                       <Disclosure.Panel>
                         <ul className="text-base">
-                          <li className="pl-8 cursor-pointer pb-3 pt-4 font-extrabold text-left hover:text-primary border-t border-gray-400 bg-gray-50">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/hosting/web-hosting");
+                            }}
+                            className="pl-8 cursor-pointer pb-3 pt-4 font-extrabold text-left hover:text-primary border-t border-gray-400 bg-gray-50"
+                          >
                             Web Hosting
                           </li>
-                          <li className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary border-y border-gray-400">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/hosting/cloud-hosting");
+                            }}
+                            className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary border-y border-gray-400"
+                          >
                             Cloud Hosting
                           </li>
-                          <li className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/hosting/wordpress-hosting");
+                            }}
+                            className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary"
+                          >
                             WordPress Hosting
                           </li>
                         </ul>
