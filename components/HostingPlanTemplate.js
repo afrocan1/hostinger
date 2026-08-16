@@ -139,7 +139,7 @@ export default function HostingPlanTemplate({
 
                 <Link href="/pricing" passHref>
                   
-                    className={
+                    <a className={
                       plan.featured
                         ? "block text-center rounded-md py-3 mb-8 font-semibold bg-primary text-white hover:brightness-110 active:brightness-95 transition"
                         : "block text-center rounded-md py-3 mb-8 font-semibold border border-slate-300 dark:border-white/15 hover:border-primary hover:text-primary transition"
