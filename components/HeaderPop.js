@@ -27,7 +27,7 @@ export default function HeaderPop() {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute -right-36 z-10 mt-4 w-96 py-6 px-10 origin-top-right rounded bg-white dark:bg-lightGray shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ">
+       <Menu.Items className="absolute right-0 sm:-right-36 z-10 mt-4 w-[90vw] max-w-sm sm:w-96 py-6 px-6 sm:px-10 origin-top-right rounded bg-white dark:bg-lightGray shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ">
           <div className="w-16 absolute top-0 right-36 -mt-5 overflow-hidden inline-block">
             <div className=" h-5 w-5 bg-white dark:bg-lightGray rotate-45 transform origin-bottom-left"></div>
           </div>
