@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import Header from "../sections/Header";
 
 function Check() {
   return (
@@ -30,6 +31,7 @@ export default function HostingPlanTemplate({
         <title>{seoTitle}</title>
       </Head>
 
+      <Header />
       <main className="bg-white dark:bg-darkGray text-textColor dark:text-white">
         {/* Hero */}
         <section className="relative overflow-hidden bg-darkGray px-6 pt-28 pb-24 text-center">
