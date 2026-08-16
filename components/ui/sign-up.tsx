@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import Header from "../components/Header";
+import Header from "../../sections/Header";
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle, useMemo, useCallback, createContext, Children } from "react";
 // Importing class-variance-authority for the built-in button component
 import { cva, type VariantProps } from "class-variance-authority";
