@@ -20,7 +20,7 @@ import HeaderPop2 from "../components/HeaderPop2";
 import HeaderPop3 from "../components/HeaderPop3";
 import HeaderPop4 from "../components/HeaderPop4";
 import Link from "next/link";
-
+import { useAuth } from "@/context/AuthContext";
 const Header = () => {
   const router = useRouter();
   const { scrollYProgress } = useScroll();
@@ -44,7 +44,8 @@ const Header = () => {
     window.addEventListener("scroll", changeColor);
   }, []);
 
-  const { systemTheme, theme, setTheme } = useTheme();
+ const { systemTheme, theme, setTheme } = useTheme();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -159,19 +160,42 @@ const Header = () => {
               <HeaderPop4 />
             </li>
           </ul>
-          <Link href={"/login"}>
-            <button className="flex justify-center items-center gap-3 rounded-full border border-white py-1 px-5 text-xl">
-              <div>
-                <MdLockOutline className="text-2xl" />
-              </div>
-              Log In
-            </button>
-          </Link>
-          <Link href={"/signup"}>
-            <button className="flex justify-center items-center gap-3 rounded-full border border-white py-1 px-5 text-xl">
-              Sign Up
-            </button>
-          </Link>
+          {mounted && user ? (
+            <>
+              <Link href={"/dashboard"}>
+                <button className="flex justify-center items-center gap-3 rounded-full border border-white py-1 px-5 text-xl">
+                  Dashboard
+                </button>
+              </Link>
+              <Link href={"/dashboard"}>
+                <div className="w-9 h-9 rounded-full overflow-hidden border border-white/40 cursor-pointer flex-shrink-0">
+                  {user.photoURL ? (
+                    <img src={user.photoURL} alt={user.displayName || "Profile"} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-primary flex items-center justify-center text-sm font-bold uppercase">
+                      {(user.displayName || user.email || "?").charAt(0)}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href={"/login"}>
+                <button className="flex justify-center items-center gap-3 rounded-full border border-white py-1 px-5 text-xl">
+                  <div>
+                    <MdLockOutline className="text-2xl" />
+                  </div>
+                  Log In
+                </button>
+              </Link>
+              <Link href={"/signup"}>
+                <button className="flex justify-center items-center gap-3 rounded-full border border-white py-1 px-5 text-xl">
+                  Sign Up
+                </button>
+              </Link>
+            </>
+          )}
           <Link href={"/cart"}>
             <button className="flex  text-xl justify-center items-center gap-3">
               <div>
@@ -437,22 +461,35 @@ const Header = () => {
                 )}
               </Disclosure>
             </dl>
-            <Link href={"/login"}>
-              <button className="flex justify-center items-center gap-3 rounded-full border-2 border-primary w-10/12 mx-auto py-3 px-5 font-bold hover:bg-primary text-primary hover:text-white transition duration-300 ease-out">
-                <div>
-                  <MdLockOutline className="text-2xl" />
-                </div>
-                <span className=" ">Log In</span>
-              </button>
-            </Link>
-            <Link href={"/signup"}>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="mt-3 flex justify-center items-center gap-3 rounded-full bg-primary w-10/12 mx-auto py-3 px-5 font-bold text-white transition duration-300 ease-out"
-              >
-                <span>Sign Up</span>
-              </button>
-            </Link>
+            {mounted && user ? (
+              <Link href={"/dashboard"}>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="mt-3 flex justify-center items-center gap-3 rounded-full bg-primary w-10/12 mx-auto py-3 px-5 font-bold text-white transition duration-300 ease-out"
+                >
+                  <span>Dashboard</span>
+                </button>
+              </Link>
+            ) : (
+              <>
+                <Link href={"/login"}>
+                  <button className="flex justify-center items-center gap-3 rounded-full border-2 border-primary w-10/12 mx-auto py-3 px-5 font-bold hover:bg-primary text-primary hover:text-white transition duration-300 ease-out">
+                    <div>
+                      <MdLockOutline className="text-2xl" />
+                    </div>
+                    <span className=" ">Log In</span>
+                  </button>
+                </Link>
+                <Link href={"/signup"}>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="mt-3 flex justify-center items-center gap-3 rounded-full bg-primary w-10/12 mx-auto py-3 px-5 font-bold text-white transition duration-300 ease-out"
+                  >
+                    <span>Sign Up</span>
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
