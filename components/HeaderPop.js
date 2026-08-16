@@ -32,7 +32,7 @@ export default function HeaderPop() {
           </div>
           <div className="">
             <Menu.Item>
-              <a href="#">
+              <a href="/hosting/web-hosting">
                 <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
                   <img src="/assets/icons/Web Hosting.svg" alt="" />
                   <div>
@@ -45,7 +45,7 @@ export default function HeaderPop() {
               </a>
             </Menu.Item>
             <Menu.Item>
-              <a href="#">
+              <a href="/hosting/cloud-hosting">
                 <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
                   <img src="/assets/icons/Cloud.svg" alt="" />
                   <div>
@@ -58,7 +58,7 @@ export default function HeaderPop() {
               </a>
             </Menu.Item>
             <Menu.Item>
-              <a href="#">
+              <a href="/hosting/wordpress-hosting">
                 <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out">
                   <img src="/assets/icons/Wordpress.svg" alt="" />
                   <div>
