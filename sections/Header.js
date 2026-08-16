@@ -297,13 +297,31 @@ const Header = () => {
                     <dd className="w-full text-base text-black px-3">
                       <Disclosure.Panel>
                         <ul className="text-base">
-                          <li className="pl-8 cursor-pointer pb-3 pt-4 font-extrabold text-left hover:text-primary border-t border-gray-400 bg-gray-50">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/vps/vps-hosting");
+                            }}
+                            className="pl-8 cursor-pointer pb-3 pt-4 font-extrabold text-left hover:text-primary border-t border-gray-400 bg-gray-50"
+                          >
                             VPS Hosting
                           </li>
-                          <li className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary border-y border-gray-400">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/vps/cyberpanel-hosting");
+                            }}
+                            className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary border-y border-gray-400"
+                          >
                             CyberPanel Hosting
                           </li>
-                          <li className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/vps/minecraft-hosting");
+                            }}
+                            className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary"
+                          >
                             Minecraft Servere Hosting
                           </li>
                         </ul>
@@ -337,10 +355,22 @@ const Header = () => {
                     <dd className="w-full text-base text-black px-3">
                       <Disclosure.Panel>
                         <ul className="text-base">
-                          <li className="pl-8 cursor-pointer pb-3 pt-4 font-extrabold text-left hover:text-primary border-t border-gray-400 bg-gray-50">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/email/google-workspace-hosting");
+                            }}
+                            className="pl-8 cursor-pointer pb-3 pt-4 font-extrabold text-left hover:text-primary border-t border-gray-400 bg-gray-50"
+                          >
                             Google Workspace Email Hosting
                           </li>
-                          <li className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/email/hostinger-email-hosting");
+                            }}
+                            className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary"
+                          >
                             Hostier Email Hosting
                           </li>
                         </ul>
@@ -377,10 +407,22 @@ const Header = () => {
                           <li className="pl-8 cursor-pointer pb-3 pt-4 font-extrabold text-left hover:text-primary border-t border-gray-400 bg-gray-50">
                             Domain Name Search
                           </li>
-                          <li className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary border-y border-gray-400">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/domain/whois-lookup");
+                            }}
+                            className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary border-y border-gray-400"
+                          >
                             WHOIS Lookup
                           </li>
-                          <li className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary">
+                          <li
+                            onClick={() => {
+                              setIsOpen(false);
+                              router.push("/domain/domain-transfer");
+                            }}
+                            className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary"
+                          >
                             Domain Transfer
                           </li>
                         </ul>
