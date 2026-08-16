@@ -2,7 +2,7 @@ import { ThemeProvider } from "next-themes";
 import "../styles/globals.css";
 import Aos from "aos";
 import { useEffect } from "react";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider } from "@/lib/AuthContext";
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     Aos.init({
