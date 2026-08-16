@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment } from "react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { Menu, Transition } from "@headlessui/react";
 import { HiChevronDown } from "react-icons/hi";
 
@@ -9,6 +9,7 @@ function classNames(...classes) {
 }
 
 export default function HeaderPop() {
+  const router = useRouter();
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -32,52 +33,49 @@ export default function HeaderPop() {
             <div className=" h-5 w-5 bg-white dark:bg-lightGray rotate-45 transform origin-bottom-left"></div>
           </div>
           <div className="">
-            <Menu.Item as="div">
-              <Link href="/hosting/web-hosting" passHref>
-                <a>
-                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer">
-                    <img src="/assets/icons/Web Hosting.svg" alt="" />
-                    <div>
-                      <h4 className=" text-xl md:text-xl font-extrabold ">
-                        Web Hosting
-                      </h4>
-                      <p className="capitalize">For Small to medium website</p>
-                    </div>
-                  </div>
-                </a>
-              </Link>
+            <Menu.Item>
+              <div
+                onClick={() => router.push("/hosting/web-hosting")}
+                className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
+              >
+                <img src="/assets/icons/Web Hosting.svg" alt="" />
+                <div>
+                  <h4 className=" text-xl md:text-xl font-extrabold ">
+                    Web Hosting
+                  </h4>
+                  <p className="capitalize">For Small to medium website</p>
+                </div>
+              </div>
             </Menu.Item>
-            <Menu.Item as="div">
-              <Link href="/hosting/cloud-hosting" passHref>
-                <a>
-                  <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer">
-                    <img src="/assets/icons/Cloud.svg" alt="" />
-                    <div>
-                      <h4 className=" text-xl md:text-xl font-extrabold ">
-                        Cloud Hosting
-                      </h4>
-                      <p className="capitalize">For Large scale projects</p>
-                    </div>
-                  </div>
-                </a>
-              </Link>
+            <Menu.Item>
+              <div
+                onClick={() => router.push("/hosting/cloud-hosting")}
+                className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
+              >
+                <img src="/assets/icons/Cloud.svg" alt="" />
+                <div>
+                  <h4 className=" text-xl md:text-xl font-extrabold ">
+                    Cloud Hosting
+                  </h4>
+                  <p className="capitalize">For Large scale projects</p>
+                </div>
+              </div>
             </Menu.Item>
-<Menu.Item as="div">
-              <Link href="/hosting/wordpress-hosting" passHref>
-                <a>
-                 <div className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer">
-                    <img src="/assets/icons/Wordpress.svg" alt="" />
-                    <div>
-                      <h4 className=" text-xl md:text-xl font-extrabold ">
-                        Wordpress Hosting
-                      </h4>
-                      <p className="capitalize">
-                        Optimized solutions for Wordpress Hosting
-                      </p>
-                    </div>
-                  </div>
-                </a>
-              </Link>
+<Menu.Item>
+              <div
+                onClick={() => router.push("/hosting/wordpress-hosting")}
+                className="flex my-6 justify-start items-center gap-5 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
+              >
+                <img src="/assets/icons/Wordpress.svg" alt="" />
+                <div>
+                  <h4 className=" text-xl md:text-xl font-extrabold ">
+                    Wordpress Hosting
+                  </h4>
+                  <p className="capitalize">
+                    Optimized solutions for Wordpress Hosting
+                  </p>
+                </div>
+              </div>
             </Menu.Item>
           </div>
         </Menu.Items>
