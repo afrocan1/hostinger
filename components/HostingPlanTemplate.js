@@ -210,7 +210,7 @@ export default function HostingPlanTemplate({
                   </div>
                   <p
                     className={`text-sm mb-4 ${
-                      plan.popular ? "text-gray-200" : "text-gray-600"
+                      plan.popular ? "text-white" : "text-gray-600"
                     }`}
                   >
                     {plan.description}
