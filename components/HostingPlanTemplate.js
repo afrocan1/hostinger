@@ -167,7 +167,7 @@ export default function HostingPlanTemplate({
               as="p"
               animationNum={2}
               customVariants={revealVariants}
-              className="sm:text-base text-sm text-gray-600 sm:w-[70%] w-[80%] mx-auto"
+              className="sm:text-base text-sm text-gray-600 dark:text-white sm:w-[70%] w-[80%] mx-auto"
             >
               {subtitle}
             </TimelineContent>
