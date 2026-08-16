@@ -2,7 +2,7 @@ import { ThemeProvider } from "next-themes";
 import "../styles/globals.css";
 import Aos from "aos";
 import { useEffect } from "react";
-
+import { AuthProvider } from "@/context/AuthContext";
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     Aos.init({
@@ -12,9 +12,10 @@ function MyApp({ Component, pageProps }) {
   }, []);
   return (
     <ThemeProvider attribute="class">
-      <Component {...pageProps} />
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
-
 export default MyApp;
