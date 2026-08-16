@@ -209,7 +209,7 @@ const Header = () => {
         <div
           data-aos="zoom-in-down"
           data-aos-duration="300"
-          className="flex md:hidden gap-4"
+          className="flex md:hidden gap-4 items-center"
         >
           <Link href={"/cart"}>
             <button className="flex justify-center items-center gap-3 rounded-full">
@@ -218,6 +218,19 @@ const Header = () => {
               </div>
             </button>
           </Link>
+          {mounted && user && (
+            <Link href={"/dashboard"}>
+              <div className="w-8 h-8 rounded-full overflow-hidden border border-white/40 cursor-pointer flex-shrink-0">
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt={user.displayName || "Profile"} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-primary flex items-center justify-center text-xs font-bold uppercase">
+                    {(user.displayName || user.email || "?").charAt(0)}
+                  </div>
+                )}
+              </div>
+            </Link>
+          )}
           <button className="flex justify-center items-center gap-3 rounded-full">
             <div>
               {isOpen ? (
