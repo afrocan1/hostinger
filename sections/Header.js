@@ -167,12 +167,14 @@ const Header = () => {
               Log In
             </button>
           </Link>
-          <button className="flex  text-xl justify-center items-center gap-3">
-            <div>
-              <HiOutlineShoppingCart className="text-2xl" />
-            </div>
-            Cart
-          </button>
+          <Link href={"/cart"}>
+            <button className="flex  text-xl justify-center items-center gap-3">
+              <div>
+                <HiOutlineShoppingCart className="text-2xl" />
+              </div>
+              Cart
+            </button>
+          </Link>
         </div>
         {/* Burger icon standard */}
         <div
