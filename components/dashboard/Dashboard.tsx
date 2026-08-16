@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/lib/AuthContext';
+import { useUserCollection } from '@/lib/useUserCollection';
 import { 
   Search, 
   LayoutDashboard, 
@@ -41,58 +42,64 @@ export type NavGroupData = {
   items: NavItemData[];
 };
 
-const mockNavGroups: NavGroupData[] = [
-  {
-    items: [
-      { id: 'search', title: 'Search', icon: Search, shortcut: '⌘K' },
-      { id: 'home', title: 'Dashboard', icon: LayoutDashboard },
-      { id: 'inbox', title: 'Notifications', icon: Inbox, badge: 3 },
-      { id: 'analytics', title: 'Usage', icon: Activity },
-    ]
-  },
-  {
-    heading: 'My Products',
-    items: [
-      { 
-        id: 'projects', 
-        title: 'Hosting', 
-        icon: FolderKanban,
-        children: [
-          { id: 'p-active', title: 'Web Hosting', icon: Hash },
-          { id: 'p-archived', title: 'WordPress Hosting', icon: Hash },
-        ]
-      },
-      { id: 'calendar', title: 'Renewals', icon: Calendar },
-      { 
-        id: 'team', 
-        title: 'VPS', 
-        icon: Users,
-        children: [
-          { id: 't-design', title: 'VPS Hosting', icon: Hash },
-          { id: 't-eng', title: 'CyberPanel Hosting', icon: Hash },
-          { id: 't-product', title: 'Minecraft Hosting', icon: Hash },
-        ]
-      },
-      { 
-        id: 'customers', 
-        title: 'Domains', 
-        icon: Globe,
-        children: [
-          { id: 'c-enterprise', title: 'My Domains', icon: Hash },
-          { id: 'c-smb', title: 'Domain Transfer', icon: Hash },
-        ]
-      },
-      { id: 'finance', title: 'Billing', icon: CreditCard },
-    ]
-  },
-  {
-    heading: 'Developers',
-    items: [
-      { id: 'api', title: 'API Keys', icon: Terminal },
-      { id: 'webhooks', title: 'Webhooks', icon: Blocks },
-    ]
-  }
-];
+type DomainDoc = { name: string; status: string; expires: string; autoRenew: boolean };
+type HostingDoc = { planName: string; domain: string; status: string; renews: string; category: 'web' | 'wordpress' };
+type VpsDoc = { serverName: string; plan: string; status: string; ip: string };
+type InvoiceDoc = { invoiceNumber: string; amount: string; status: string; date: string };
+type NotificationDoc = { message: string; date: string };
+
+function makeNavGroups(counts: { inbox: number }): NavGroupData[] {
+  return [
+    {
+      items: [
+        { id: 'search', title: 'Search', icon: Search, shortcut: '⌘K' },
+        { id: 'home', title: 'Dashboard', icon: LayoutDashboard },
+        { id: 'inbox', title: 'Notifications', icon: Inbox, badge: counts.inbox || undefined },
+        { id: 'analytics', title: 'Usage', icon: Activity },
+      ]
+    },
+    {
+      heading: 'My Products',
+      items: [
+        { 
+          id: 'projects', 
+          title: 'Hosting', 
+          icon: FolderKanban,
+          children: [
+            { id: 'p-active', title: 'Web Hosting', icon: Hash },
+            { id: 'p-archived', title: 'WordPress Hosting', icon: Hash },
+          ]
+        },
+        { id: 'calendar', title: 'Renewals', icon: Calendar },
+        { 
+          id: 'team', 
+          title: 'VPS', 
+          icon: Users,
+          children: [
+            { id: 't-design', title: 'VPS Hosting', icon: Hash },
+          ]
+        },
+        { 
+          id: 'customers', 
+          title: 'Domains', 
+          icon: Globe,
+          children: [
+            { id: 'c-enterprise', title: 'My Domains', icon: Hash },
+            { id: 'c-smb', title: 'Domain Transfer', icon: Hash },
+          ]
+        },
+        { id: 'finance', title: 'Billing', icon: CreditCard },
+      ]
+    },
+    {
+      heading: 'Developers',
+      items: [
+        { id: 'api', title: 'API Keys', icon: Terminal },
+        { id: 'webhooks', title: 'Webhooks', icon: Blocks },
+      ]
+    }
+  ];
+}
 
 const mockBottomItems: NavItemData[] = [
   { id: 'settings', title: 'Settings', icon: Settings, shortcut: '⌘,' },
@@ -247,24 +254,27 @@ export function SidebarNav({
   activeId,
   onSelect,
   activeWorkspace,
-  onWorkspaceSelect
+  onWorkspaceSelect,
+  inboxCount = 0,
 }: { 
   className?: string,
   activeId?: string,
   onSelect?: (id: string) => void,
   activeWorkspace?: string,
-  onWorkspaceSelect?: (ws: string) => void
+  onWorkspaceSelect?: (ws: string) => void,
+  inboxCount?: number,
 }) {
   const [internalId, setInternalId] = useState('home');
   const currentId = activeId !== undefined ? activeId : internalId;
   const handleSelect = onSelect || setInternalId;
+  const navGroups = makeNavGroups({ inbox: inboxCount });
 
   return (
     <div className={`flex flex-col w-[260px] h-full bg-card/50 border-r border-border/50 p-3 font-sans ${className}`}>
       <WorkspaceSwitcher selected={activeWorkspace} onSelect={onWorkspaceSelect} />
 
       <div className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] flex flex-col gap-4 mt-2">
-        {mockNavGroups.map((group, idx) => (
+        {navGroups.map((group, idx) => (
           <div key={idx} className="flex flex-col gap-0.5">
             {group.heading && (
               <span className="px-2.5 mb-1 text-[11px] font-semibold tracking-wider text-muted-foreground/50 uppercase">
@@ -294,228 +304,6 @@ export function SidebarNav({
         ))}
       </div>
     </div>
-  );
-}
-
-const allItems = [...mockNavGroups.flatMap(g => g.items), ...mockBottomItems];
-const flattenItems = (items: NavItemData[]): NavItemData[] => {
-  return items.reduce((acc, item) => {
-    acc.push(item);
-    if (item.children) acc.push(...flattenItems(item.children));
-    return acc;
-  }, [] as NavItemData[]);
-};
-const flatMockData = flattenItems(allItems);
-
-// --- SECTION CONTENT DATA ---
-type SectionData = {
-  title: string;
-  subtitle: string;
-  stats?: { label: string; value: string }[];
-  columns?: string[];
-  rows?: string[][];
-  emptyLabel?: string;
-};
-
-const sectionContent: Record<string, SectionData> = {
-  home: {
-    title: 'Welcome back',
-    subtitle: "Here's what's happening with your account today.",
-    stats: [
-      { label: 'Active Domains', value: '2' },
-      { label: 'Active Hosting Plans', value: '2' },
-      { label: 'Open Tickets', value: '0' },
-      { label: 'Next Renewal', value: '14 days' },
-    ],
-    columns: ['Item', 'Type', 'Status', 'Renews'],
-    rows: [
-      ['goaradio.com', 'Domain', 'Active', 'Mar 12, 2027'],
-      ['Business Web Hosting', 'Hosting', 'Active', 'Jan 30, 2027'],
-      ['thecartel.io', 'Domain', 'Active', 'Nov 4, 2026'],
-    ],
-  },
-  inbox: {
-    title: 'Notifications',
-    subtitle: 'Updates about your domains, hosting, and billing.',
-    columns: ['Notification', 'Date'],
-    rows: [
-      ['Your domain goaradio.com renews in 14 days', 'Today'],
-      ['Invoice #4821 was paid', '2 days ago'],
-      ['SSL certificate renewed for thecartel.io', '1 week ago'],
-    ],
-  },
-  analytics: {
-    title: 'Usage',
-    subtitle: 'Resource usage across your active services.',
-    stats: [
-      { label: 'Storage Used', value: '4.2 GB / 20 GB' },
-      { label: 'Bandwidth This Month', value: '18 GB' },
-      { label: 'Email Accounts', value: '3 / 10' },
-      { label: 'Uptime (30d)', value: '99.98%' },
-    ],
-  },
-  projects: {
-    title: 'Hosting',
-    subtitle: 'Manage your hosting plans.',
-    columns: ['Plan', 'Domain', 'Status', 'Renews'],
-    rows: [
-      ['Business Web Hosting', 'goaradio.com', 'Active', 'Jan 30, 2027'],
-      ['WordPress Hosting', 'thecartel.io', 'Active', 'Feb 18, 2027'],
-    ],
-  },
-  'p-active': {
-    title: 'Web Hosting',
-    subtitle: 'Your active web hosting plans.',
-    columns: ['Plan', 'Domain', 'Status', 'Renews'],
-    rows: [['Business Web Hosting', 'goaradio.com', 'Active', 'Jan 30, 2027']],
-  },
-  'p-archived': {
-    title: 'WordPress Hosting',
-    subtitle: 'Your active WordPress hosting plans.',
-    columns: ['Plan', 'Domain', 'Status', 'Renews'],
-    rows: [['WordPress Hosting', 'thecartel.io', 'Active', 'Feb 18, 2027']],
-  },
-  calendar: {
-    title: 'Renewals',
-    subtitle: 'Upcoming renewals across your account.',
-    columns: ['Item', 'Renews', 'Auto-renew'],
-    rows: [
-      ['thecartel.io', 'Nov 4, 2026', 'On'],
-      ['Business Web Hosting', 'Jan 30, 2027', 'On'],
-      ['goaradio.com', 'Mar 12, 2027', 'On'],
-    ],
-  },
-  team: {
-    title: 'VPS',
-    subtitle: 'Manage your VPS servers.',
-    columns: ['Server', 'Plan', 'Status', 'IP Address'],
-    rows: [['goaradio-node-1', 'VPS 2GB', 'Running', '192.0.2.14']],
-  },
-  't-design': {
-    title: 'VPS Hosting',
-    subtitle: 'Your VPS servers.',
-    columns: ['Server', 'Plan', 'Status', 'IP Address'],
-    rows: [['goaradio-node-1', 'VPS 2GB', 'Running', '192.0.2.14']],
-  },
-  't-eng': {
-    title: 'CyberPanel Hosting',
-    subtitle: 'Servers managed with CyberPanel.',
-    emptyLabel: 'No CyberPanel servers yet.',
-  },
-  't-product': {
-    title: 'Minecraft Hosting',
-    subtitle: 'Your game servers.',
-    emptyLabel: 'No Minecraft servers yet.',
-  },
-  customers: {
-    title: 'Domains',
-    subtitle: 'Manage your domains.',
-    columns: ['Domain', 'Status', 'Expires', 'Auto-renew'],
-    rows: [
-      ['goaradio.com', 'Active', 'Mar 12, 2027', 'On'],
-      ['thecartel.io', 'Active', 'Nov 4, 2026', 'On'],
-    ],
-  },
-  'c-enterprise': {
-    title: 'My Domains',
-    subtitle: 'All domains on your account.',
-    columns: ['Domain', 'Status', 'Expires', 'Auto-renew'],
-    rows: [
-      ['goaradio.com', 'Active', 'Mar 12, 2027', 'On'],
-      ['thecartel.io', 'Active', 'Nov 4, 2026', 'On'],
-    ],
-  },
-  'c-smb': {
-    title: 'Domain Transfer',
-    subtitle: 'Transfer a domain into your account.',
-    emptyLabel: 'No transfers in progress.',
-  },
-  finance: {
-    title: 'Billing',
-    subtitle: 'Invoices and payment methods.',
-    stats: [
-      { label: 'Next Invoice', value: '$24.00' },
-      { label: 'Due Date', value: 'Jan 30, 2027' },
-      { label: 'Payment Method', value: 'Visa •••• 4242' },
-    ],
-    columns: ['Invoice', 'Amount', 'Status', 'Date'],
-    rows: [
-      ['#4821', '$24.00', 'Paid', 'Dec 30, 2026'],
-      ['#4790', '$12.00', 'Paid', 'Nov 30, 2026'],
-    ],
-  },
-  api: {
-    title: 'API Keys',
-    subtitle: 'Manage API keys for programmatic access to your account.',
-    emptyLabel: 'No API keys yet.',
-  },
-  webhooks: {
-    title: 'Webhooks',
-    subtitle: 'Get notified when events happen on your account.',
-    emptyLabel: 'No webhooks configured yet.',
-  },
-  settings: {
-    title: 'Settings',
-    subtitle: 'Manage your account preferences.',
-    emptyLabel: 'Account settings will appear here.',
-  },
-};
-
-function SectionContent({ id }: { id: string }) {
-  const data = sectionContent[id] || sectionContent.home;
-
-  return (
-    <>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">{data.title}</h1>
-          <p className="text-[13px] text-muted-foreground mt-1">{data.subtitle}</p>
-        </div>
-      </div>
-
-      {data.stats && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
-          {data.stats.map((stat) => (
-            <div key={stat.label} className="bg-card rounded-xl border border-border/50 shadow-sm p-4 flex flex-col gap-1">
-              <span className="text-[11px] text-muted-foreground uppercase tracking-wide">{stat.label}</span>
-              <span className="text-[15px] font-semibold text-foreground truncate">{stat.value}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {data.columns && data.rows && (
-        <div className="w-full bg-card rounded-xl border border-border/50 shadow-sm p-4 md:p-6 overflow-x-auto">
-          <div
-            className="grid gap-2 px-4 pb-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wide min-w-[480px]"
-            style={{ gridTemplateColumns: `repeat(${data.columns.length}, minmax(0, 1fr))` }}
-          >
-            {data.columns.map((col) => (
-              <span key={col} className="truncate">{col}</span>
-            ))}
-          </div>
-          <div className="flex flex-col gap-2 min-w-[480px]">
-            {data.rows.map((row, i) => (
-              <div
-                key={i}
-                className="grid gap-2 items-center h-12 px-4 bg-black/5 dark:bg-white/5 rounded-lg text-[13px] text-foreground"
-                style={{ gridTemplateColumns: `repeat(${data.columns!.length}, minmax(0, 1fr))` }}
-              >
-                {row.map((cell, j) => (
-                  <span key={j} className="truncate">{cell}</span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {data.emptyLabel && (
-        <div className="w-full bg-card rounded-xl border border-border/50 shadow-sm p-10 flex items-center justify-center">
-          <p className="text-[13px] text-muted-foreground">{data.emptyLabel}</p>
-        </div>
-      )}
-    </>
   );
 }
 
@@ -575,6 +363,202 @@ function AvatarMenu() {
   );
 }
 
+type LiveData = {
+  domains: (DomainDoc & { id: string })[];
+  hosting: (HostingDoc & { id: string })[];
+  vps: (VpsDoc & { id: string })[];
+  invoices: (InvoiceDoc & { id: string })[];
+  notifications: (NotificationDoc & { id: string })[];
+  loading: boolean;
+};
+
+const sectionCopy: Record<string, { title: string; subtitle: string }> = {
+  home: { title: 'Welcome back', subtitle: "Here's what's happening with your account today." },
+  inbox: { title: 'Notifications', subtitle: 'Updates about your domains, hosting, and billing.' },
+  analytics: { title: 'Usage', subtitle: 'Resource usage across your active services.' },
+  projects: { title: 'Hosting', subtitle: 'Manage your hosting plans.' },
+  'p-active': { title: 'Web Hosting', subtitle: 'Your active web hosting plans.' },
+  'p-archived': { title: 'WordPress Hosting', subtitle: 'Your active WordPress hosting plans.' },
+  calendar: { title: 'Renewals', subtitle: 'Upcoming renewals across your account.' },
+  team: { title: 'VPS', subtitle: 'Manage your VPS servers.' },
+  't-design': { title: 'VPS Hosting', subtitle: 'Your VPS servers.' },
+  customers: { title: 'Domains', subtitle: 'Manage your domains.' },
+  'c-enterprise': { title: 'My Domains', subtitle: 'All domains on your account.' },
+  'c-smb': { title: 'Domain Transfer', subtitle: 'Transfer a domain into your account.' },
+  finance: { title: 'Billing', subtitle: 'Invoices and payment methods.' },
+  api: { title: 'API Keys', subtitle: 'Manage API keys for programmatic access to your account.' },
+  webhooks: { title: 'Webhooks', subtitle: 'Get notified when events happen on your account.' },
+  settings: { title: 'Settings', subtitle: 'Manage your account preferences.' },
+};
+
+function buildTable(id: string, live: LiveData): { columns: string[]; rows: string[][] } | null {
+  switch (id) {
+    case 'home':
+      return {
+        columns: ['Item', 'Type', 'Status', 'Renews'],
+        rows: [
+          ...live.domains.map(d => [d.name, 'Domain', d.status, d.expires]),
+          ...live.hosting.map(h => [h.planName, 'Hosting', h.status, h.renews]),
+        ],
+      };
+    case 'inbox':
+      return {
+        columns: ['Notification', 'Date'],
+        rows: live.notifications.map(n => [n.message, n.date]),
+      };
+    case 'projects':
+      return {
+        columns: ['Plan', 'Domain', 'Status', 'Renews'],
+        rows: live.hosting.map(h => [h.planName, h.domain, h.status, h.renews]),
+      };
+    case 'p-active':
+      return {
+        columns: ['Plan', 'Domain', 'Status', 'Renews'],
+        rows: live.hosting.filter(h => h.category === 'web').map(h => [h.planName, h.domain, h.status, h.renews]),
+      };
+    case 'p-archived':
+      return {
+        columns: ['Plan', 'Domain', 'Status', 'Renews'],
+        rows: live.hosting.filter(h => h.category === 'wordpress').map(h => [h.planName, h.domain, h.status, h.renews]),
+      };
+    case 'calendar':
+      return {
+        columns: ['Item', 'Renews', 'Auto-renew'],
+        rows: [
+          ...live.domains.map(d => [d.name, d.expires, d.autoRenew ? 'On' : 'Off']),
+          ...live.hosting.map(h => [h.planName, h.renews, 'On']),
+        ],
+      };
+    case 'team':
+    case 't-design':
+      return {
+        columns: ['Server', 'Plan', 'Status', 'IP Address'],
+        rows: live.vps.map(v => [v.serverName, v.plan, v.status, v.ip]),
+      };
+    case 'customers':
+    case 'c-enterprise':
+      return {
+        columns: ['Domain', 'Status', 'Expires', 'Auto-renew'],
+        rows: live.domains.map(d => [d.name, d.status, d.expires, d.autoRenew ? 'On' : 'Off']),
+      };
+    case 'finance':
+      return {
+        columns: ['Invoice', 'Amount', 'Status', 'Date'],
+        rows: live.invoices.map(i => [i.invoiceNumber, i.amount, i.status, i.date]),
+      };
+    default:
+      return null;
+  }
+}
+
+function buildStats(id: string, live: LiveData): { label: string; value: string }[] | null {
+  if (id === 'home') {
+    const nextExpiry = live.domains
+      .map(d => d.expires)
+      .sort()[0];
+    return [
+      { label: 'Active Domains', value: String(live.domains.filter(d => d.status === 'Active').length) },
+      { label: 'Active Hosting Plans', value: String(live.hosting.filter(h => h.status === 'Active').length) },
+      { label: 'Open Tickets', value: '0' },
+      { label: 'Next Renewal', value: nextExpiry || '—' },
+    ];
+  }
+  if (id === 'analytics') {
+    return [
+      { label: 'Storage Used', value: '—' },
+      { label: 'Bandwidth This Month', value: '—' },
+      { label: 'Email Accounts', value: '—' },
+      { label: 'Uptime (30d)', value: '—' },
+    ];
+  }
+  if (id === 'finance') {
+    const nextInvoice = live.invoices.find(i => i.status !== 'Paid');
+    return [
+      { label: 'Next Invoice', value: nextInvoice?.amount || '—' },
+      { label: 'Due Date', value: nextInvoice?.date || '—' },
+      { label: 'Payment Method', value: 'Not on file' },
+    ];
+  }
+  return null;
+}
+
+function SectionContent({ id, live }: { id: string; live: LiveData }) {
+  const copy = sectionCopy[id] || sectionCopy.home;
+  const stats = buildStats(id, live);
+  const table = buildTable(id, live);
+
+  if (live.loading) {
+    return (
+      <>
+        <div className="flex items-center justify-between mb-8">
+          <div className="w-48 h-8 bg-black/5 dark:bg-white/5 rounded-md animate-pulse" />
+        </div>
+        <div className="w-full bg-card rounded-xl border border-border/50 shadow-sm p-6">
+          <div className="flex flex-col gap-4">
+            <div className="w-full h-12 bg-black/5 dark:bg-white/5 rounded-lg animate-pulse" />
+            <div className="w-full h-12 bg-black/5 dark:bg-white/5 rounded-lg animate-pulse" />
+            <div className="w-full h-12 bg-black/5 dark:bg-white/5 rounded-lg animate-pulse" />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">{copy.title}</h1>
+          <p className="text-[13px] text-muted-foreground mt-1">{copy.subtitle}</p>
+        </div>
+      </div>
+
+      {stats && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+          {stats.map((stat) => (
+            <div key={stat.label} className="bg-card rounded-xl border border-border/50 shadow-sm p-4 flex flex-col gap-1">
+              <span className="text-[11px] text-muted-foreground uppercase tracking-wide">{stat.label}</span>
+              <span className="text-[15px] font-semibold text-foreground truncate">{stat.value}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {table && table.rows.length > 0 && (
+        <div className="w-full bg-card rounded-xl border border-border/50 shadow-sm p-4 md:p-6 overflow-x-auto">
+          <div
+            className="grid gap-2 px-4 pb-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wide min-w-[480px]"
+            style={{ gridTemplateColumns: `repeat(${table.columns.length}, minmax(0, 1fr))` }}
+          >
+            {table.columns.map((col) => (
+              <span key={col} className="truncate">{col}</span>
+            ))}
+          </div>
+          <div className="flex flex-col gap-2 min-w-[480px]">
+            {table.rows.map((row, i) => (
+              <div
+                key={i}
+                className="grid gap-2 items-center h-12 px-4 bg-black/5 dark:bg-white/5 rounded-lg text-[13px] text-foreground"
+                style={{ gridTemplateColumns: `repeat(${table.columns.length}, minmax(0, 1fr))` }}
+              >
+                {row.map((cell, j) => (
+                  <span key={j} className="truncate">{cell}</span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {(!table || table.rows.length === 0) && (
+        <div className="w-full bg-card rounded-xl border border-border/50 shadow-sm p-10 flex items-center justify-center">
+          <p className="text-[13px] text-muted-foreground">Nothing here yet.</p>
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeId, setActiveId] = useState('home');
@@ -582,14 +566,22 @@ export default function Dashboard() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const router = useRouter();
 
+  const { data: domains, loading: domainsLoading } = useUserCollection<DomainDoc>('domains');
+  const { data: hosting, loading: hostingLoading } = useUserCollection<HostingDoc>('hosting');
+  const { data: vps, loading: vpsLoading } = useUserCollection<VpsDoc>('vps');
+  const { data: invoices, loading: invoicesLoading } = useUserCollection<InvoiceDoc>('invoices');
+  const { data: notifications, loading: notificationsLoading } = useUserCollection<NotificationDoc>('notifications');
+
+  const live: LiveData = {
+    domains, hosting, vps, invoices, notifications,
+    loading: domainsLoading || hostingLoading || vpsLoading || invoicesLoading || notificationsLoading,
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined' && window.innerWidth < 768) {
       setIsOpen(false);
     }
   }, []);
-
-  const activeItem = flatMockData.find(i => i.id === activeId);
-  const activeTitle = activeItem ? activeItem.title : 'Dashboard';
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -610,6 +602,8 @@ export default function Dashboard() {
       setIsOpen(false);
     }
   };
+
+  const activeTitle = (sectionCopy[activeId] || sectionCopy.home).title;
 
   return (
     <div className="flex w-full h-screen bg-background relative overflow-hidden">
@@ -634,6 +628,7 @@ export default function Dashboard() {
           onSelect={handleSelect}
           activeWorkspace={activeWorkspace}
           onWorkspaceSelect={setActiveWorkspace}
+          inboxCount={notifications.length}
         />
       </div>
 
@@ -667,7 +662,7 @@ export default function Dashboard() {
         </div>
 
         <div className="p-4 sm:p-6 md:p-8 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          <SectionContent id={activeId} />
+          <SectionContent id={activeId} live={live} />
         </div>
       </div>
 
