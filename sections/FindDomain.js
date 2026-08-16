@@ -12,8 +12,9 @@ export default function FindDomain() {
     setError("");
     setResults([]);
     try {
+      const cleanQuery = query.trim().split(".")[0];
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domain-search?domain=${encodeURIComponent(query)}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domain-search?domain=${encodeURIComponent(cleanQuery)}`
       );
       const data = await res.json();
       const parsed = Object.entries(data).map(([tld, info]) => ({
