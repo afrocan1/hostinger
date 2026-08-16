@@ -8,7 +8,7 @@ import Header from "../sections/Header";
 // Local stand-ins for shadcn's Card primitives (not installed in this project)
 function Card({ className = "", children }) {
   return (
-    <div className={`rounded-lg border bg-white shadow-sm ${className}`}>
+    <div className={`rounded-lg border shadow-sm ${className}`}>
       {children}
     </div>
   );
@@ -188,32 +188,50 @@ export default function HostingPlanTemplate({
             >
               <Card
                 className={`relative border-neutral-200 ${
-                  plan.popular ? "ring-2 ring-primary bg-primary/5" : "bg-white "
+                  plan.popular ? "ring-2 ring-primary bg-primary" : "bg-white "
                 }`}
               >
                 <CardHeader className="text-left">
                   <div className="flex justify-between">
-                    <h3 className="text-3xl font-semibold text-gray-900 mb-2">
+                    <h3
+                      className={`text-3xl font-semibold mb-2 ${
+                        plan.popular ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       {plan.name}
                     </h3>
                     {plan.popular && (
                       <div className="">
-                        <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span className="bg-white text-primary px-3 py-1 rounded-full text-sm font-medium">
                           Popular
                         </span>
                       </div>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
+                  <p
+                    className={`text-sm mb-4 ${
+                      plan.popular ? "text-gray-200" : "text-gray-600"
+                    }`}
+                  >
+                    {plan.description}
+                  </p>
                   <div className="flex items-baseline">
-                    <span className="text-4xl font-semibold text-gray-900">
+                    <span
+                      className={`text-4xl font-semibold ${
+                        plan.popular ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       {typeof plan.price === "number"
                         ? `$${isYearly && plan.yearlyPrice ? plan.yearlyPrice : plan.price}`
                         : isYearly && plan.yearlyPrice
                         ? plan.yearlyPrice
                         : plan.price}
                     </span>
-                    <span className="text-gray-600 ml-1">
+                    <span
+                      className={`ml-1 ${
+                        plan.popular ? "text-gray-200" : "text-gray-600"
+                      }`}
+                    >
                       /{isYearly ? "year" : "month"}
                     </span>
                   </div>
@@ -234,26 +252,60 @@ export default function HostingPlanTemplate({
                   <ul className="space-y-2 font-semibold py-5">
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center">
-                        <span className="text-neutral-800 grid place-content-center mt-0.5 mr-3">
+                        <span
+                          className={`grid place-content-center mt-0.5 mr-3 ${
+                            plan.popular ? "text-white" : "text-neutral-800"
+                          }`}
+                        >
                           {feature.icon}
                         </span>
-                        <span className="text-sm text-gray-600">{feature.text}</span>
+                        <span
+                          className={`text-sm ${
+                            plan.popular ? "text-gray-200" : "text-gray-600"
+                          }`}
+                        >
+                          {feature.text}
+                        </span>
                       </li>
                     ))}
                   </ul>
 
                   {plan.includes?.length > 0 && (
-                    <div className="space-y-3 pt-4 border-t border-neutral-200">
-                      <h4 className="font-medium text-base text-gray-900 mb-3">
+                    <div
+                      className={`space-y-3 pt-4 border-t ${
+                        plan.popular ? "border-white/20" : "border-neutral-200"
+                      }`}
+                    >
+                      <h4
+                        className={`font-medium text-base mb-3 ${
+                          plan.popular ? "text-white" : "text-gray-900"
+                        }`}
+                      >
                         {plan.includes[0]}
                       </h4>
                       <ul className="space-y-2 font-semibold">
                         {plan.includes.slice(1).map((feature, featureIndex) => (
                           <li key={featureIndex} className="flex items-center">
-                            <span className="h-6 w-6 bg-green-50 border border-primary rounded-full grid place-content-center mt-0.5 mr-3">
-                              <FaCheckDouble className="h-4 w-4 text-primary" />
+                            <span
+                              className={`h-6 w-6 rounded-full grid place-content-center mt-0.5 mr-3 border ${
+                                plan.popular
+                                  ? "bg-white/10 border-white"
+                                  : "bg-green-50 border-primary"
+                              }`}
+                            >
+                              <FaCheckDouble
+                                className={`h-4 w-4 ${
+                                  plan.popular ? "text-white" : "text-primary"
+                                }`}
+                              />
                             </span>
-                            <span className="text-sm text-gray-600">{feature}</span>
+                            <span
+                              className={`text-sm ${
+                                plan.popular ? "text-gray-200" : "text-gray-600"
+                              }`}
+                            >
+                              {feature}
+                            </span>
                           </li>
                         ))}
                       </ul>
