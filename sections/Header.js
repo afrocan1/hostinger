@@ -20,7 +20,7 @@ import HeaderPop2 from "../components/HeaderPop2";
 import HeaderPop3 from "../components/HeaderPop3";
 import HeaderPop4 from "../components/HeaderPop4";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/lib/AuthContext";
 const Header = () => {
   const router = useRouter();
   const { scrollYProgress } = useScroll();
