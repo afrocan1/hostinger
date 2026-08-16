@@ -10,12 +10,20 @@ function classNames(...classes) {
 
 export default function HeaderPop() {
   const router = useRouter();
+  const isActive = router.pathname.startsWith("/hosting");
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="cursor-pointer flex justify-center items-center mr-1 focus:outline-none focus-visible:ring-0 text-xl">
+        <Menu.Button
+          className={`relative cursor-pointer flex justify-center items-center mr-1 focus:outline-none focus-visible:ring-0 text-xl transition-colors duration-200 ${
+            isActive ? "text-primary dark:text-primary font-bold" : ""
+          }`}
+        >
           Hosting
           <HiChevronDown className="text-2xl " />
+          {isActive && (
+            <span className="absolute -bottom-2 left-0 right-6 h-[3px] rounded-full bg-primary" />
+          )}
         </Menu.Button>
       </div>
 
