@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
 export default function FindDomain() {
-  const [query, setQuery] = useState("");
+   const [query, setQuery] = useState("");
+  const [searchedQuery, setSearchedQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -12,7 +13,8 @@ export default function FindDomain() {
     setError("");
     setResults([]);
     try {
-      const cleanQuery = query.trim().split(".")[0];
+            const cleanQuery = query.trim().split(".")[0];
+      setSearchedQuery(cleanQuery);
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/domain-search?domain=${encodeURIComponent(cleanQuery)}`
       );
@@ -82,7 +84,7 @@ export default function FindDomain() {
                 className="flex justify-between items-center bg-white dark:bg-gray-800 rounded-lg px-5 py-3"
               >
                 <span className="font-medium">
-                  {query}.{r.tld}
+                  {searchedQuery}.{r.tld}
                 </span>
                 <span
                   className={
