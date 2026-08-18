@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Check, X } from "lucide-react";
 
 export default function FindDomain() {
    const [query, setQuery] = useState("");
@@ -86,12 +87,22 @@ export default function FindDomain() {
                 <span className="font-medium">
                   {searchedQuery}.{r.tld}
                 </span>
-                <span
-                  className={
+                                <span
+                  className={`flex items-center gap-1.5 font-medium ${
                     r.status === "available" ? "text-green-500" : "text-red-500"
-                  }
+                  }`}
                 >
-                  {r.status === "available" ? "Available" : "Taken"}
+                  {r.status === "available" ? (
+                    <>
+                      <Check size={18} strokeWidth={2.5} />
+                      Available
+                    </>
+                  ) : (
+                    <>
+                      <X size={18} strokeWidth={2.5} />
+                      Taken
+                    </>
+                  )}
                 </span>
               </div>
             ))}
