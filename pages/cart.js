@@ -1,29 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { HiOutlineTrash, HiOutlineShoppingCart } from "react-icons/hi";
 import Header from "../sections/Header";
-
-const initialItems = [
-  { id: 1, name: "Web Hosting - Starter", price: 5.99, qty: 1 },
-  { id: 2, name: "Domain - .com (1yr)", price: 12.99, qty: 1 },
-];
+import { getCart, removeFromCart, updateCartQty } from "@/lib/cart";
 
 const CartScreen = () => {
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    setItems(getCart());
+  }, []);
 
   const updateQty = (id, delta) => {
-    setItems((prev) =>
-      prev
-        .map((item) =>
-          item.id === id
-            ? { ...item, qty: Math.max(1, item.qty + delta) }
-            : item
-        )
-    );
+    setItems(updateCartQty(id, delta));
   };
 
   const removeItem = (id) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setItems(removeFromCart(id));
   };
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
@@ -95,8 +88,12 @@ const CartScreen = () => {
               <span>Total</span>
               <span>${subtotal.toFixed(2)}</span>
             </div>
-            <button className="w-full rounded-full bg-primary text-white py-3 font-bold">
-              Checkout
+                        <button
+              disabled
+              className="w-full rounded-full bg-primary text-white py-3 font-bold opacity-50 cursor-not-allowed"
+              title="Coming soon"
+            >
+              Continue to Purchase
             </button>
           </div>
         </div>
