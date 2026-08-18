@@ -1,12 +1,21 @@
 import React, { useState } from "react";
-import { Check, X } from "lucide-react";
+import { Check, X, ShoppingCart } from "lucide-react";
+import { addToCart } from "@/lib/cart";
+
+const TLD_PRICES = {
+  com: 12.99, net: 14.99, org: 13.99, io: 39.99, ai: 79.99,
+  xyz: 2.99, art: 6.99, dev: 15.99, app: 15.99, co: 27.99,
+  info: 12.99, online: 34.99, store: 4.99, live: 24.99, in: 8.99,
+  tech: 24.99, shop: 24.99, site: 19.99, me: 19.99, biz: 14.99,
+};
 
 export default function FindDomain() {
    const [query, setQuery] = useState("");
   const [searchedQuery, setSearchedQuery] = useState("");
-  const [results, setResults] = useState([]);
+    const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [addedTlds, setAddedTlds] = useState([]);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -26,11 +35,12 @@ export default function FindDomain() {
         return;
       }
 
-      const parsed = Object.entries(data).map(([tld, info]) => ({
+            const parsed = Object.entries(data).map(([tld, info]) => ({
         tld,
         status: info.status,
       }));
       setResults(parsed);
+      setAddedTlds([]);
     } catch {
       setError("Something went wrong. Try again.");
     } finally {
@@ -87,23 +97,42 @@ export default function FindDomain() {
                 <span className="font-medium">
                   {searchedQuery}.{r.tld}
                 </span>
-                                <span
-                  className={`flex items-center gap-1.5 font-medium ${
-                    r.status === "available" ? "text-green-500" : "text-red-500"
-                  }`}
-                >
-                  {r.status === "available" ? (
-                    <>
-                      <Check size={18} strokeWidth={2.5} />
-                      Available
-                    </>
-                  ) : (
-                    <>
-                      <X size={18} strokeWidth={2.5} />
-                      Taken
-                    </>
+                                                <div className="flex items-center gap-4">
+                  <span
+                    className={`flex items-center gap-1.5 font-medium ${
+                      r.status === "available" ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {r.status === "available" ? (
+                      <>
+                        <Check size={18} strokeWidth={2.5} />
+                        Available
+                      </>
+                    ) : (
+                      <>
+                        <X size={18} strokeWidth={2.5} />
+                        Taken
+                      </>
+                    )}
+                  </span>
+                  {r.status === "available" && (
+                    <button
+                      onClick={() => {
+                        addToCart({
+                          id: `${searchedQuery}.${r.tld}`,
+                          name: `Domain - .${r.tld} (1yr)`,
+                          price: TLD_PRICES[r.tld] || 12.99,
+                        });
+                        setAddedTlds((prev) => [...prev, r.tld]);
+                      }}
+                      disabled={addedTlds.includes(r.tld)}
+                      className="flex items-center gap-1.5 text-sm font-bold rounded-full border border-primary text-primary px-3 py-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ShoppingCart size={14} />
+                      {addedTlds.includes(r.tld) ? "Added" : "Add to Cart"}
+                    </button>
                   )}
-                </span>
+                </div>
               </div>
             ))}
           </div>
