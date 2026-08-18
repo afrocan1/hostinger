@@ -21,6 +21,7 @@ import HeaderPop3 from "../components/HeaderPop3";
 import HeaderPop4 from "../components/HeaderPop4";
 import Link from "next/link";
 import { useAuth } from "@/lib/AuthContext";
+import { getCartCount } from "@/lib/cart";
 const Header = () => {
   const router = useRouter();
   const { scrollYProgress } = useScroll();
@@ -44,13 +45,18 @@ const Header = () => {
     window.addEventListener("scroll", changeColor);
   }, []);
 
- const { systemTheme, theme, setTheme } = useTheme();
+   const { systemTheme, theme, setTheme } = useTheme();
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     setMounted(true);
+    setCartCount(getCartCount());
+    const handleCartUpdate = () => setCartCount(getCartCount());
+    window.addEventListener("cartUpdated", handleCartUpdate);
+    return () => window.removeEventListener("cartUpdated", handleCartUpdate);
   }, []);
 
   const navigations = [
@@ -196,10 +202,15 @@ const Header = () => {
               </Link>
             </>
           )}
-          <Link href={"/cart"}>
-            <button className="flex  text-xl justify-center items-center gap-3">
-              <div>
+                    <Link href={"/cart"}>
+            <button className="flex text-xl justify-center items-center gap-3">
+              <div className="relative">
                 <HiOutlineShoppingCart className="text-2xl" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-[#ff3f79] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
               </div>
               Cart
             </button>
@@ -211,10 +222,15 @@ const Header = () => {
           data-aos-duration="300"
           className="flex md:hidden gap-4 items-center"
         >
-          <Link href={"/cart"}>
+                    <Link href={"/cart"}>
             <button className="flex justify-center items-center gap-3 rounded-full">
-              <div>
+              <div className="relative">
                 <HiOutlineShoppingCart className="text-2xl" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-[#ff3f79] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
               </div>
             </button>
           </Link>
