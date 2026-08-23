@@ -84,8 +84,8 @@ const CartScreen = () => {
 
                 {item.includes?.length > 0 && (
                   <div className="mt-4 pt-4 border-t border-dashed border-gray-300 dark:border-gray-700">
-                    <p className="text-xs font-bold uppercase tracking-wide opacity-50 mb-3">
-                      What's included
+                                        <p className="text-xs font-bold uppercase tracking-wide opacity-50 mb-3">
+                      What&apos;s included
                     </p>
                     <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
                       {item.includes.map((inc, idx) => (
