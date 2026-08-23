@@ -6,7 +6,10 @@ const TLD_PRICES = {
   com: 12.99, net: 14.99, org: 13.99, io: 39.99, ai: 79.99,
   xyz: 2.99, art: 6.99, dev: 15.99, app: 15.99, co: 27.99,
   info: 12.99, online: 34.99, store: 4.99, live: 24.99, in: 8.99,
-  tech: 24.99, shop: 24.99, site: 19.99, me: 19.99, biz: 14.99,
+    tech: 24.99, shop: 24.99, site: 19.99, me: 19.99, biz: 14.99,
+  vu: 89.99, ru: 39.99, td: 149.99, tv: 34.99, cc: 29.99,
+  ws: 44.99, to: 79.99, gg: 54.99, sh: 59.99, fm: 99.99,
+  la: 44.99, im: 44.99, je: 44.99, cx: 64.99, nu: 44.99,
 };
 
 export default function FindDomain() {
