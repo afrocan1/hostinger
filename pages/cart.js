@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { HiOutlineTrash, HiOutlineShoppingCart } from "react-icons/hi";
+import {
+  HiOutlineTrash,
+  HiOutlineShoppingCart,
+  HiOutlineCheckCircle,
+  HiOutlineClock,
+} from "react-icons/hi";
 import Header from "../sections/Header";
 import { getCart, removeFromCart, updateCartQty } from "@/lib/cart";
 
@@ -40,40 +45,65 @@ const CartScreen = () => {
       ) : (
         <div className="flex flex-col lg:flex-row gap-10">
           <div className="flex-1 flex flex-col gap-4">
-            {items.map((item) => (
+                        {items.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center justify-between border border-gray-300 dark:border-gray-700 rounded-xl p-4"
+                className="border border-gray-300 dark:border-gray-700 rounded-xl p-5"
               >
-                <div>
-                  <p className="font-bold text-lg">{item.name}</p>
-                  <p className="opacity-60">${item.price.toFixed(2)}</p>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-full">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="font-bold text-lg">{item.name}</p>
+                    <p className="opacity-60 text-sm mt-0.5">
+                      ${item.price.toFixed(2)}{item.type === "domain" ? " / year" : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-full">
+                      <button
+                        onClick={() => updateQty(item.id, -1)}
+                        className="px-3 py-1 text-xl"
+                      >
+                        -
+                      </button>
+                      <span className="px-2">{item.qty}</span>
+                      <button
+                        onClick={() => updateQty(item.id, 1)}
+                        className="px-3 py-1 text-xl"
+                      >
+                        +
+                      </button>
+                    </div>
                     <button
-                      onClick={() => updateQty(item.id, -1)}
-                      className="px-3 py-1 text-xl"
+                      onClick={() => removeItem(item.id)}
+                      className="text-red-500 text-2xl"
                     >
-                      -
-                    </button>
-                    <span className="px-2">{item.qty}</span>
-                    <button
-                      onClick={() => updateQty(item.id, 1)}
-                      className="px-3 py-1 text-xl"
-                    >
-                      +
+                      <HiOutlineTrash />
                     </button>
                   </div>
-
-                  <button
-                    onClick={() => removeItem(item.id)}
-                    className="text-red-500 text-2xl"
-                  >
-                    <HiOutlineTrash />
-                  </button>
                 </div>
+
+                {item.includes?.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-dashed border-gray-300 dark:border-gray-700">
+                    <p className="text-xs font-bold uppercase tracking-wide opacity-50 mb-3">
+                      What's included
+                    </p>
+                    <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
+                      {item.includes.map((inc, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-sm">
+                          {inc.pending ? (
+                            <HiOutlineClock className="mt-0.5 shrink-0 opacity-50" />
+                          ) : (
+                            <HiOutlineCheckCircle className="mt-0.5 shrink-0 text-green-500" />
+                          )}
+                          <span>
+                            <span className="font-medium">{inc.label}</span>
+                            <span className="opacity-60"> — {inc.detail}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             ))}
           </div>
