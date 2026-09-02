@@ -303,8 +303,7 @@ const CartScreen = () => {
               </div>
 
               <p className="text-xs opacity-50 mt-4 text-center">
-                This is a placeholder payment flow. No automated confirmation
-                is wired up yet.
+                This is a payment flow.
               </p>
             </>
           )}
