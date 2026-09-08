@@ -24,8 +24,9 @@ import {
   Blocks,
   PanelLeftClose,
   PanelLeftOpen,
-  Command,
-  X
+    Command,
+  X,
+  Server
 } from 'lucide-react';
 
 export type NavItemData = {
@@ -88,7 +89,8 @@ function makeNavGroups(counts: { inbox: number }): NavGroupData[] {
             { id: 'c-smb', title: 'Domain Transfer', icon: Hash },
           ]
         },
-        { id: 'finance', title: 'Billing', icon: CreditCard },
+                { id: 'finance', title: 'Billing', icon: CreditCard },
+        { id: 'cpanel', title: 'cPanel', icon: Server },
       ]
     },
     {
@@ -385,7 +387,8 @@ const sectionCopy: Record<string, { title: string; subtitle: string }> = {
   customers: { title: 'Domains', subtitle: 'Manage your domains.' },
   'c-enterprise': { title: 'My Domains', subtitle: 'All domains on your account.' },
   'c-smb': { title: 'Domain Transfer', subtitle: 'Transfer a domain into your account.' },
-  finance: { title: 'Billing', subtitle: 'Invoices and payment methods.' },
+    finance: { title: 'Billing', subtitle: 'Invoices and payment methods.' },
+  cpanel: { title: 'cPanel', subtitle: 'Manage your hosting control panel.' },
   api: { title: 'API Keys', subtitle: 'Manage API keys for programmatic access to your account.' },
   webhooks: { title: 'Webhooks', subtitle: 'Get notified when events happen on your account.' },
   settings: { title: 'Settings', subtitle: 'Manage your account preferences.' },
@@ -487,6 +490,23 @@ function SectionContent({ id, live }: { id: string; live: LiveData }) {
   const stats = buildStats(id, live);
   const table = buildTable(id, live);
 
+  const handleCpanelLogin = async (hostingId: string) => {
+    try {
+      const res = await fetch(`/api/cpanel/sso?hostingId=${encodeURIComponent(hostingId)}`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (data?.url) {
+        window.open(data.url, '_blank', 'noopener,noreferrer');
+      } else {
+        alert('Unable to open cPanel right now. Please try again later.');
+      }
+    } catch (err) {
+      console.error('cPanel SSO error:', err);
+      alert('Unable to open cPanel right now. Please try again later.');
+    }
+  };
+
   if (live.loading) {
     return (
       <>
@@ -500,6 +520,56 @@ function SectionContent({ id, live }: { id: string; live: LiveData }) {
             <div className="w-full h-12 bg-black/5 dark:bg-white/5 rounded-lg animate-pulse" />
           </div>
         </div>
+      </>
+    );
+  }
+
+    const hasPurchases = live.hosting.length > 0 || live.vps.length > 0;
+
+  if (id === 'cpanel') {
+    return (
+      <>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">{copy.title}</h1>
+            <p className="text-[13px] text-muted-foreground mt-1">{copy.subtitle}</p>
+          </div>
+        </div>
+
+        {!hasPurchases ? (
+          <div className="w-full bg-card rounded-xl border border-border/50 shadow-sm p-10 flex flex-col items-center justify-center text-center gap-3">
+            <Server className="w-8 h-8 text-muted-foreground/40" strokeWidth={1.5} />
+            <p className="text-[14px] font-medium text-foreground">No cPanel access yet</p>
+            <p className="text-[13px] text-muted-foreground max-w-sm">
+              You'll need an active hosting or VPS plan before cPanel options appear here. Purchase a plan to get started.
+            </p>
+            <Link href="/hosting">
+              <div className="mt-2 px-4 py-2 text-[13px] font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity cursor-pointer">
+                View Hosting Plans
+              </div>
+            </Link>
+          </div>
+        ) : (
+          <div className="w-full bg-card rounded-xl border border-border/50 shadow-sm p-4 md:p-6 flex flex-col gap-3">
+            {live.hosting.map((h) => (
+              <div
+                key={h.id}
+                className="flex items-center justify-between h-14 px-4 bg-black/5 dark:bg-white/5 rounded-lg"
+              >
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[13px] font-medium text-foreground truncate">{h.domain || h.planName}</span>
+                  <span className="text-[11px] text-muted-foreground truncate">{h.planName} • {h.status}</span>
+                </div>
+                <button
+                  onClick={() => handleCpanelLogin(h.id)}
+                  className="shrink-0 px-3 py-1.5 text-[12px] font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                >
+                  Log in to cPanel
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </>
     );
   }
