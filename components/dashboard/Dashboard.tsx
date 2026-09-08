@@ -541,7 +541,7 @@ function SectionContent({ id, live }: { id: string; live: LiveData }) {
             <Server className="w-8 h-8 text-muted-foreground/40" strokeWidth={1.5} />
             <p className="text-[14px] font-medium text-foreground">No cPanel access yet</p>
             <p className="text-[13px] text-muted-foreground max-w-sm">
-              You'll need an active hosting or VPS plan before cPanel options appear here. Purchase a plan to get started.
+                            You&apos;ll need an active hosting or VPS plan before cPanel options appear here. Purchase a plan to get started.
             </p>
             <Link href="/hosting">
               <div className="mt-2 px-4 py-2 text-[13px] font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity cursor-pointer">
