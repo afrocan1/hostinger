@@ -30,7 +30,7 @@ const Hero = () => {
               data-aos="fade-up"
               data-aos-duration="800"
             >
-              <Link href="#pricing" passHref>
+                            <Link href="#find-domain" passHref>
                 <button className="flex justify-center items-center text-white bg-[#fc5185] border-0 py-3 px-20 focus:outline-none hover:bg-[#ff3f79] rounded-full text-lg font-extrabold">
                   Get started
                 </button>
