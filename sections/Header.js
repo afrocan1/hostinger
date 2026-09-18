@@ -45,7 +45,8 @@ const Header = () => {
     window.addEventListener("scroll", changeColor);
   }, []);
 
-   const { systemTheme, theme, setTheme } = useTheme();
+      const { systemTheme, theme, setTheme } = useTheme();
+  const currentTheme = theme === "system" ? systemTheme : theme;
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
