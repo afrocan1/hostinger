@@ -100,7 +100,7 @@ const Header = () => {
         className={
           color
             ? "flex text-black dark:text-white sticky top-0 z-40 transition duration-75 ease-in-out items-center rounded-b-2xl justify-between bg-white dark:bg-darkGray shadow-lg h-16 md:h-20 px-5 md:px-10 py-1 md:py-4"
-            : "flex text-white sticky top-0 z-40 transition duration-75 ease-in-out items-center justify-between bg-black dark:bg-darkGray h-16 md:h-20 px-5 md:px-10 py-1 md:py-4"
+            : "flex text-white sticky top-0 z-40 transition duration-75 ease-in-out items-center justify-between bg-primary dark:bg-darkGray h-16 md:h-20 px-5 md:px-10 py-1 md:py-4"
         }
       >
         <div
