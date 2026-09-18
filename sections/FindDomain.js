@@ -110,7 +110,7 @@ export default function FindDomain() {
   };
 
   return (
-    <section className="bg-[#f5f5ff] dark:bg-lightGray py-20">
+        <section id="find-domain" className="bg-[#f5f5ff] dark:bg-lightGray py-20">
       <div className="flex flex-col space-y-5 justify-center items-center">
         <h2 className="text-[1.7rem]" data-aos="fade-up">
           Find the perfect domain name
