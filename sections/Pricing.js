@@ -79,15 +79,17 @@ export default function Pricing() {
           <div className="text-textColor md:px-6 dark:text-white flex flex-col justify-center items-center ">
             <p className="relative">
               <span className="-mt-2 absolute text-2xl -ml-5">$</span>
-              <span className="text-6xl font-extrabold">25.00</span>
+                            <span className="text-6xl font-extrabold">45.00</span>
               <span className="font-extrabold text-lg">/mo</span>
             </p>
             <p className="font-extrabold text-lg tracking-tighter">
-              $25.00/mo when you renew
+              $45.00/mo when you renew
             </p>
-            <button className="flex justify-center items-center text-white bg-primary border-0 py-2 px-10 md:px-28 focus:outline-none hover:bg-[#5d2ee7] rounded-full text-lg font-extrabold mt-7 w-4/5 md:w-full">
-              Select
-            </button>
+                        <Link href="/#find-domain" passHref>
+              <button className="flex justify-center items-center text-white bg-primary border-0 py-2 px-10 md:px-28 focus:outline-none hover:bg-[#5d2ee7] rounded-full text-lg font-extrabold mt-7 w-4/5 md:w-full">
+                Select
+              </button>
+            </Link>
             <p className="font-extrabold text-xl my-8 tracking-tighter">
               Plan Features
             </p>
