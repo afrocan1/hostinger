@@ -107,13 +107,11 @@ const Header = () => {
           data-aos-duration="300"
           className="flex justify-center items-center gap-5 md:gap-10 cursor-pointer"
         >
-                   <Link href={"/"}>
+          <Link href={"/"}>
             <img
               src="/Dark Empire.png"
               alt="Logo"
-              className={`h-[1.5rem] md:h-[1.8rem] w-auto object-contain transition-all duration-150 ${
-                color && currentTheme !== "dark" ? "brightness-0" : "brightness-0 invert"
-              }`}
+              className="h-[1.5rem] md:h-[1.8rem] w-auto object-contain"
             />
           </Link>
           <div>{renderThemeChanger()}</div>
