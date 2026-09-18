@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }) {
     });
   }, []);
   return (
-    <ThemeProvider attribute="class">
+        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
       <AuthProvider>
         <Component {...pageProps} />
       </AuthProvider>
