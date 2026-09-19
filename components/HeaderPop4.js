@@ -85,8 +85,8 @@ export default function HeaderPop4() {
                   <h4 className=" text-xl md:text-xl font-extrabold ">
                     Domain Transfer
                   </h4>
-                  <p className="capitalize">
-                    Want to transfer domain to hostinger
+                                    <p className="capitalize">
+                    Want to transfer domain to Dark Empire
                   </p>
                 </div>
               </button>
