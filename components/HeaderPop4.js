@@ -45,7 +45,7 @@ export default function HeaderPop4() {
             <Menu.Item>
               <button
                 type="button"
-                onClick={() => router.push("/domain/domain-search")}
+                                onClick={() => router.push("/#find-domain")}
                 className="flex w-full my-6 justify-start items-center gap-5 text-left bg-transparent border-0 p-0 text-textColor dark:text-white hover:scale-105 transition duration-200 ease-out cursor-pointer"
               >
                 <img src="/assets/icons/Domain.svg" alt="" />
