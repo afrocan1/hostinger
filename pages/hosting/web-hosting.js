@@ -16,11 +16,11 @@ export default function WebHosting() {
         {
           name: "Single Web Hosting",
           tagline: "Ideal solution for beginners",
-          price: "₹69.00",
+                    price: "$69.00",
           period: "mo",
-          mrp: "₹329",
+          mrp: "$329",
           savePercent: "79%",
-          renewNote: "₹159.00/mo when you renew",
+          renewNote: "$159.00/mo when you renew",
           features: [
             "1 Website",
             "50 GB SSD Storage",
@@ -31,11 +31,11 @@ export default function WebHosting() {
         {
           name: "Premium Web Hosting",
           tagline: "Perfect package for personal websites",
-          price: "₹149.00",
+                    price: "$149.00",
           period: "mo",
-          mrp: "₹329",
+          mrp: "$329",
           savePercent: "79%",
-          renewNote: "₹249.00/mo when you renew",
+          renewNote: "$249.00/mo when you renew",
           featured: true,
           features: [
             "100 Websites",
@@ -48,11 +48,11 @@ export default function WebHosting() {
         {
           name: "Business Web Hosting",
           tagline: "Optimized for small and medium businesses",
-          price: "₹249.00",
+                   price: "$249.00",
           period: "mo",
-          mrp: "₹329",
+          mrp: "$329",
           savePercent: "79%",
-          renewNote: "₹499.00/mo when you renew",
+          renewNote: "$499.00/mo when you renew",
           features: [
             "100 Websites",
             "200 GB SSD Storage",
