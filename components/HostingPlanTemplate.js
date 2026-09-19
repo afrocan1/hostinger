@@ -238,7 +238,7 @@ export default function HostingPlanTemplate({
                 </CardHeader>
 
                 <CardContent className="pt-0">
-                  <Link href="/pricing" passHref>
+                                    <Link href="/#find-domain" passHref>
                     <a
                       className={`block text-center w-full mb-6 p-4 text-xl rounded-xl ${
                         plan.popular
