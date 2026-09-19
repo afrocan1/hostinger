@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
+import Link from "next/link";
 
 export default function LastSection() {
   return (
@@ -79,14 +80,16 @@ export default function LastSection() {
             We&#39;ll refund your payment if you&#39;re not 100% satisfied with
             Hostinger. No hassle, no risk.
           </p>
-          <button
-            data-aos="zoom-in"
-            data-aos-offset="100"
-            data-aos-duration="800"
-            className="flex justify-center items-center text-white bg-primary border-0 py-3 px-20 focus:outline-none hover:bg-[#5d2ee7] rounded-full text-lg font-extrabold mt-7 "
-          >
-            Get Started
-          </button>
+                    <Link href="/#find-domain" passHref>
+            <button
+              data-aos="zoom-in"
+              data-aos-offset="100"
+              data-aos-duration="800"
+              className="flex justify-center items-center text-white bg-primary border-0 py-3 px-20 focus:outline-none hover:bg-[#5d2ee7] rounded-full text-lg font-extrabold mt-7 "
+            >
+              Get Started
+            </button>
+          </Link>
         </div>
       </section>
     </>
