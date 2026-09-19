@@ -399,7 +399,7 @@ const Header = () => {
                             }}
                             className="bg-gray-50 cursor-pointer pl-8 py-3 font-extrabold   text-left hover:text-primary"
                           >
-                            Hostier Email Hosting
+                            Dark Empire Email Hosting
                           </li>
                         </ul>
                       </Disclosure.Panel>
