@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Check, X, ShoppingCart, Loader2, HelpCircle } from "lucide-react";
 import { addToCart } from "@/lib/cart";
+import { getTldPrices } from "@/lib/pricing";
 
 
 
@@ -40,8 +41,13 @@ export default function FindDomain() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [addedTlds, setAddedTlds] = useState([]);
+    const [addedTlds, setAddedTlds] = useState([]);
+  const [tldPrices, setTldPrices] = useState({});
   const debounceRef = useRef(null);
+
+  useEffect(() => {
+    getTldPrices().then(setTldPrices);
+  }, []);
 
   const runSearch = async (rawQuery) => {
     const cleanQuery = rawQuery.trim().split(".")[0];
@@ -199,7 +205,7 @@ export default function FindDomain() {
                           addToCart({
                             id: `${searchedQuery}.${r.tld}`,
                             name: `Domain - .${r.tld} (1yr)`,
-                            price: TLD_PRICES[r.tld] || 12.99,
+                                                        price: tldPrices[r.tld] || 12.99,
                             type: "domain",
                             tld: r.tld,
                             includes: getDomainIncludes(r.tld),
