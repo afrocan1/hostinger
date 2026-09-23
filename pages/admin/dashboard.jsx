@@ -25,9 +25,15 @@ import {
   Tag,
   ShieldCheck,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 
-const TABS = ["Overview", "Payments", "Pricing", "Admins"];
+const TABS = [
+  { id: "Overview", icon: ShieldCheck },
+  { id: "Payments", icon: CreditCard },
+  { id: "Pricing", icon: Tag },
+  { id: "Admins", icon: Users },
+];
 const ACTIVE_WINDOW_MS = 5 * 60 * 1000; // "active now" = touched in the last 5 min
 
 export default function AdminDashboard() {
@@ -41,6 +47,7 @@ export default function AdminDashboard() {
   const [prices, setPrices] = useState({});
   const [admins, setAdmins] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [savingPrices, setSavingPrices] = useState(false);
   const [message, setMessage] = useState("");
@@ -52,14 +59,23 @@ export default function AdminDashboard() {
         router.replace("/admin/login");
         return;
       }
-      const isAdmin = await checkIsAdmin(user.email);
-      if (!isAdmin) {
-        await signOut(auth);
-        router.replace("/admin/login");
-        return;
+      try {
+        const isAdmin = await checkIsAdmin(user.email);
+        if (!isAdmin) {
+          await signOut(auth);
+          router.replace("/admin/login");
+          return;
+        }
+        setAdminEmail(user.email);
+      } catch (err) {
+        setLoadError(
+          "Couldn't verify admin access — check your Firestore rules are deployed. (" +
+            (err?.message || "unknown error") +
+            ")"
+        );
+      } finally {
+        setChecking(false);
       }
-      setAdminEmail(user.email);
-      setChecking(false);
     });
     return () => unsub();
   }, [router]);
@@ -68,17 +84,23 @@ export default function AdminDashboard() {
     if (checking) return;
     (async () => {
       setLoadingData(true);
-      const [usersSnap, paymentsSnap, priceData, adminList] = await Promise.all([
-        getDocs(collection(db, "users")),
-        getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc"))),
-        getTldPrices(),
-        getAllAdmins(),
-      ]);
-      setUsers(usersSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
-      setPayments(paymentsSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
-      setPrices(priceData);
-      setAdmins(adminList);
-      setLoadingData(false);
+      setLoadError("");
+      try {
+        const [usersSnap, paymentsSnap, priceData, adminList] = await Promise.all([
+          getDocs(collection(db, "users")),
+          getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc"))),
+          getTldPrices(),
+          getAllAdmins(),
+        ]);
+        setUsers(usersSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
+        setPayments(paymentsSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
+        setPrices(priceData);
+        setAdmins(adminList);
+      } catch (err) {
+        setLoadError(err?.message || "Failed to load dashboard data.");
+      } finally {
+        setLoadingData(false);
+      }
     })();
   }, [checking]);
 
@@ -108,21 +130,30 @@ export default function AdminDashboard() {
 
   const handleSavePrices = async () => {
     setSavingPrices(true);
-    const numericPrices = Object.fromEntries(
-      Object.entries(prices).map(([k, v]) => [k, Number(v) || 0])
-    );
-    await updateTldPrices(numericPrices, adminEmail);
-    setSavingPrices(false);
-    setMessage("Pricing updated.");
-    setTimeout(() => setMessage(""), 2500);
+    try {
+      const numericPrices = Object.fromEntries(
+        Object.entries(prices).map(([k, v]) => [k, Number(v) || 0])
+      );
+      await updateTldPrices(numericPrices, adminEmail);
+      setMessage("Pricing updated.");
+      setTimeout(() => setMessage(""), 2500);
+    } catch (err) {
+      setMessage(err?.message || "Failed to save pricing.");
+    } finally {
+      setSavingPrices(false);
+    }
   };
 
   const handleAddAdmin = async (e) => {
     e.preventDefault();
     if (!newAdminEmail.trim()) return;
-    await addAdmin({ email: newAdminEmail, addedByEmail: adminEmail });
-    setAdmins(await getAllAdmins());
-    setNewAdminEmail("");
+    try {
+      await addAdmin({ email: newAdminEmail, addedByEmail: adminEmail });
+      setAdmins(await getAllAdmins());
+      setNewAdminEmail("");
+    } catch (err) {
+      setMessage(err?.message || "Failed to add admin.");
+    }
   };
 
   const handleRemoveAdmin = async (email) => {
@@ -136,60 +167,87 @@ export default function AdminDashboard() {
 
   if (checking) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-black dark:via-darkGray dark:to-black">
         <Loader2 className="animate-spin text-primary" size={32} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5ff] dark:bg-darkGray">
-      <header className="flex items-center justify-between bg-white dark:bg-lightGray shadow-sm px-6 py-4">
-        <h1 className="text-xl font-bold text-textColor dark:text-white">
-          Admin Dashboard
-        </h1>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500 dark:text-gray-300">
-            {adminEmail}
-          </span>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-black dark:via-darkGray dark:to-black">
+      {/* Header */}
+      <header className="sticky top-0 z-20 backdrop-blur-xl bg-white/70 dark:bg-darkGray/70 border-b border-black/5 dark:border-white/10">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-8 py-4">
+          <div>
+            <h1 className="text-lg sm:text-xl font-extrabold text-textColor dark:text-white tracking-tight">
+              Admin Dashboard
+            </h1>
+            <p className="text-xs text-gray-400 truncate max-w-[220px] sm:max-w-none">
+              {adminEmail}
+            </p>
+          </div>
           <button
             onClick={() => signOut(auth).then(() => router.push("/admin/login"))}
-            className="flex items-center gap-1.5 text-sm font-bold text-red-500"
+            className="self-start sm:self-auto flex items-center gap-1.5 text-sm font-bold text-red-500 hover:text-red-600 transition rounded-full px-3 py-1.5 hover:bg-red-500/10"
           >
             <LogOut size={16} /> Sign out
           </button>
         </div>
+
+        {/* Tabs — horizontally scrollable on mobile, never wraps/squeezes */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 pb-3 overflow-x-auto">
+          <nav className="flex gap-2 w-max min-w-full sm:w-auto">
+            {TABS.map(({ id, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setTab(id)}
+                className={`flex items-center gap-1.5 whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition-all ${
+                  tab === id
+                    ? "bg-primary text-white shadow-md shadow-primary/30"
+                    : "bg-black/5 dark:bg-white/10 text-textColor dark:text-white hover:bg-black/10 dark:hover:bg-white/20"
+                }`}
+              >
+                <Icon size={15} /> {id}
+              </button>
+            ))}
+          </nav>
+        </div>
       </header>
 
-      <nav className="flex gap-2 px-6 pt-4">
-        {TABS.map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-full text-sm font-bold transition ${
-              tab === t
-                ? "bg-primary text-white"
-                : "bg-white dark:bg-lightGray text-textColor dark:text-white"
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </nav>
+      <main className="max-w-6xl mx-auto p-4 sm:p-8">
+        {loadError && (
+          <div className="mb-5 flex items-start gap-3 rounded-2xl border border-red-300 bg-red-50 dark:bg-red-950/40 dark:border-red-800 p-4 text-sm text-red-700 dark:text-red-300">
+            <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold">Couldn't load some dashboard data</p>
+              <p className="opacity-80 break-words">{loadError}</p>
+              <p className="opacity-60 mt-1">
+                This is almost always a Firestore rules issue — confirm{" "}
+                <code>firestore.rules</code> is deployed and your account's doc
+                exists in <code>admins</code>.
+              </p>
+            </div>
+          </div>
+        )}
 
-      {message && <p className="px-6 pt-3 text-sm text-green-600">{message}</p>}
+        {message && (
+          <p className="mb-4 text-sm font-medium text-green-600 dark:text-green-400">
+            {message}
+          </p>
+        )}
 
-      <main className="p-6">
         {loadingData ? (
-          <Loader2 className="animate-spin text-primary" size={28} />
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin text-primary" size={28} />
+          </div>
         ) : (
           <>
             {tab === "Overview" && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <StatCard icon={<Users size={22} />} label="Registered users" value={users.length} />
-                <StatCard icon={<ShieldCheck size={22} />} label="Active now (5 min)" value={activeNow} />
+                <StatCard icon={<Users size={20} />} label="Registered users" value={users.length} />
+                <StatCard icon={<ShieldCheck size={20} />} label="Active now (5 min)" value={activeNow} />
                 <StatCard
-                  icon={<CreditCard size={22} />}
+                  icon={<CreditCard size={20} />}
                   label="Confirmed revenue"
                   value={
                     Object.keys(revenueByCurrency).length
@@ -203,56 +261,59 @@ export default function AdminDashboard() {
             )}
 
             {tab === "Payments" && (
-              <div className="bg-white dark:bg-lightGray rounded-xl shadow-sm overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="bg-white/80 dark:bg-lightGray/80 backdrop-blur-xl rounded-2xl shadow-xl border border-black/5 dark:border-white/10 overflow-x-auto">
+                <table className="w-full text-sm min-w-[600px]">
                   <thead>
                     <tr className="text-left border-b border-gray-200 dark:border-gray-700">
-                      <th className="p-3">Client</th>
-                      <th className="p-3">Amount</th>
-                      <th className="p-3">Tx Hash</th>
-                      <th className="p-3">Status</th>
-                      <th className="p-3">Date</th>
-                      <th className="p-3"></th>
+                      <th className="p-4 font-bold">Client</th>
+                      <th className="p-4 font-bold">Amount</th>
+                      <th className="p-4 font-bold">Tx Hash</th>
+                      <th className="p-4 font-bold">Status</th>
+                      <th className="p-4 font-bold">Date</th>
+                      <th className="p-4"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {payments.length === 0 && (
                       <tr>
-                        <td colSpan={6} className="p-4 text-center text-gray-400">
+                        <td colSpan={6} className="p-8 text-center text-gray-400">
                           No payments yet.
                         </td>
                       </tr>
                     )}
                     {payments.map((p) => (
-                      <tr key={p.id} className="border-b border-gray-100 dark:border-gray-800">
-                        <td className="p-3">{p.email}</td>
-                        <td className="p-3">
+                      <tr
+                        key={p.id}
+                        className="border-b border-gray-100 dark:border-gray-800 last:border-0"
+                      >
+                        <td className="p-4">{p.email}</td>
+                        <td className="p-4 font-semibold">
                           {p.amount} {p.currency}
                         </td>
-                        <td className="p-3 font-mono text-xs truncate max-w-[160px]">
+                        <td className="p-4 font-mono text-xs truncate max-w-[160px]">
                           {p.txHash || "—"}
                         </td>
-                        <td className="p-3">
+                        <td className="p-4">
                           <span
-                            className={
+                            className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                               p.status === "confirmed"
-                                ? "text-green-500"
+                                ? "bg-green-500/10 text-green-500"
                                 : p.status === "failed"
-                                ? "text-red-500"
-                                : "text-amber-500"
-                            }
+                                ? "bg-red-500/10 text-red-500"
+                                : "bg-amber-500/10 text-amber-500"
+                            }`}
                           >
                             {p.status || "pending"}
                           </span>
                         </td>
-                        <td className="p-3">
+                        <td className="p-4 whitespace-nowrap">
                           {p.createdAt?.toDate ? p.createdAt.toDate().toLocaleString() : "—"}
                         </td>
-                        <td className="p-3">
+                        <td className="p-4">
                           {p.status !== "confirmed" && (
                             <button
                               onClick={() => handleMarkConfirmed(p.id)}
-                              className="text-xs font-bold text-primary"
+                              className="text-xs font-bold text-primary hover:underline whitespace-nowrap"
                             >
                               Mark confirmed
                             </button>
@@ -266,19 +327,19 @@ export default function AdminDashboard() {
             )}
 
             {tab === "Pricing" && (
-              <div className="bg-white dark:bg-lightGray rounded-xl shadow-sm p-5">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="bg-white/80 dark:bg-lightGray/80 backdrop-blur-xl rounded-2xl shadow-xl border border-black/5 dark:border-white/10 p-5 sm:p-7">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {Object.entries(prices)
                     .filter(([k]) => k !== "updatedAt" && k !== "updatedBy")
                     .map(([tld, price]) => (
-                      <label key={tld} className="flex flex-col gap-1 text-sm">
-                        <span className="font-bold">.{tld}</span>
+                      <label key={tld} className="flex flex-col gap-1.5 text-sm">
+                        <span className="font-bold text-textColor dark:text-white">.{tld}</span>
                         <input
                           type="number"
                           step="0.01"
                           value={price}
                           onChange={(e) => handlePriceChange(tld, e.target.value)}
-                          className="border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 bg-transparent"
+                          className="border border-gray-300 dark:border-gray-600 rounded-lg px-2.5 py-1.5 bg-transparent focus:border-primary outline-none"
                         />
                       </label>
                     ))}
@@ -286,7 +347,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={handleSavePrices}
                   disabled={savingPrices}
-                  className="mt-5 flex items-center gap-2 bg-primary text-white font-bold rounded-full px-6 py-2.5 disabled:opacity-60"
+                  className="mt-6 flex items-center gap-2 bg-primary text-white font-bold rounded-full px-6 py-2.5 disabled:opacity-60 hover:opacity-90 transition"
                 >
                   <Tag size={16} /> {savingPrices ? "Saving..." : "Save pricing"}
                 </button>
@@ -294,28 +355,42 @@ export default function AdminDashboard() {
             )}
 
             {tab === "Admins" && (
-              <div className="bg-white dark:bg-lightGray rounded-xl shadow-sm p-5 max-w-lg">
-                <form onSubmit={handleAddAdmin} className="flex gap-2 mb-5">
+              <div className="bg-white/80 dark:bg-lightGray/80 backdrop-blur-xl rounded-2xl shadow-xl border border-black/5 dark:border-white/10 p-5 sm:p-7 max-w-xl">
+                <form onSubmit={handleAddAdmin} className="flex flex-col sm:flex-row gap-2 mb-6">
                   <input
                     type="email"
                     required
                     placeholder="teammate@company.com"
                     value={newAdminEmail}
                     onChange={(e) => setNewAdminEmail(e.target.value)}
-                    className="flex-1 border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2 bg-transparent"
+                    className="flex-1 border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-transparent focus:border-primary outline-none"
                   />
-                  <button type="submit" className="bg-primary text-white font-bold rounded-full px-5 py-2">
+                  <button
+                    type="submit"
+                    className="bg-primary text-white font-bold rounded-full px-6 py-2.5 hover:opacity-90 transition"
+                  >
                     Add
                   </button>
                 </form>
-                <ul className="flex flex-col gap-2">
+                <ul className="flex flex-col gap-1">
+                  {admins.length === 0 && (
+                    <li className="text-sm text-gray-400 py-2">No admins found.</li>
+                  )}
                   {admins.map((a) => (
                     <li
                       key={a.email}
-                      className="flex justify-between items-center border-b border-gray-100 dark:border-gray-800 py-2"
+                      className="flex justify-between items-center border-b border-gray-100 dark:border-gray-800 last:border-0 py-3"
                     >
-                      <span className="text-sm">{a.email}</span>
-                      <button onClick={() => handleRemoveAdmin(a.email)} className="text-red-500">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold uppercase">
+                          {a.email.charAt(0)}
+                        </div>
+                        <span className="text-sm">{a.email}</span>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveAdmin(a.email)}
+                        className="text-red-400 hover:text-red-500 transition p-1.5 rounded-full hover:bg-red-500/10"
+                      >
                         <Trash2 size={16} />
                       </button>
                     </li>
@@ -332,11 +407,13 @@ export default function AdminDashboard() {
 
 function StatCard({ icon, label, value }) {
   return (
-    <div className="bg-white dark:bg-lightGray rounded-xl shadow-sm p-5 flex items-center gap-4">
-      <div className="text-primary">{icon}</div>
-      <div>
+    <div className="bg-white/80 dark:bg-lightGray/80 backdrop-blur-xl rounded-2xl shadow-xl border border-black/5 dark:border-white/10 p-5 flex items-center gap-4">
+      <div className="w-11 h-11 rounded-full bg-primary/15 text-primary flex items-center justify-center shrink-0">
+        {icon}
+      </div>
+      <div className="min-w-0">
         <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
-        <p className="text-xl font-bold text-textColor dark:text-white">{value}</p>
+        <p className="text-xl font-extrabold text-textColor dark:text-white truncate">{value}</p>
       </div>
     </div>
   );
