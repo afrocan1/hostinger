@@ -233,11 +233,11 @@ export default function AdminDashboard() {
           <div className="mb-5 flex items-start gap-3 rounded-2xl border border-red-300 bg-red-50 dark:bg-red-950/40 dark:border-red-800 p-4 text-sm text-red-700 dark:text-red-300">
             <AlertTriangle size={18} className="shrink-0 mt-0.5" />
             <div className="min-w-0">
-              <p className="font-bold">Couldn't load some dashboard data</p>
+                            <p className="font-bold">Couldn&apos;t load some dashboard data</p>
               <p className="opacity-80 break-words">{loadError}</p>
               <p className="opacity-60 mt-1">
                 Almost always a Firestore rules issue — confirm{" "}
-                <code>firestore.rules</code> is deployed and your account's doc
+                                <code>firestore.rules</code> is deployed and your account&apos;s doc
                 exists in <code>admins</code>.
               </p>
             </div>
