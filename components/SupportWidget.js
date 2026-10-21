@@ -5,7 +5,7 @@ import { FaWhatsapp, FaTelegramPlane } from "react-icons/fa";
 // Fill these in. Leave a value as "" to hide that option.
 const WHATSAPP_NUMBER = "233XXXXXXXXX"; // country code + number, digits only, no + or spaces
 const SUPPORT_EMAIL = "support@yourdomain.com";
-const TELEGRAM_USERNAME = "yourusername"; // without the @
+const TELEGRAM_USERNAME = "blvk_bird"; // without the @
 
 const SupportWidget = () => {
   const [open, setOpen] = useState(false);
@@ -22,7 +22,7 @@ const SupportWidget = () => {
     TELEGRAM_USERNAME && {
       label: "Telegram",
       detail: "Message us on Telegram",
-      href: `https://t.me/${blvk_bird}`,
+      href: `https://t.me/${TELEGRAM_USERNAME}`,
       icon: <FaTelegramPlane className="text-sky-500 text-xl" />,
     },
     SUPPORT_EMAIL && {
