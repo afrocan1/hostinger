@@ -43,7 +43,7 @@ export type NavGroupData = {
   items: NavItemData[];
 };
 
-type DomainDoc = { name: string; status: string; expires: string; autoRenew: boolean };
+type DomainDoc = { name: string; status: string; expires: string; autoRenew: boolean; amountPaid?: string; renewalPrice?: string };
 type HostingDoc = { planName: string; domain: string; status: string; renews: string; category: 'web' | 'wordpress' };
 type VpsDoc = { serverName: string; plan: string; status: string; ip: string };
 type InvoiceDoc = { invoiceNumber: string; amount: string; status: string; date: string };
@@ -438,11 +438,11 @@ function buildTable(id: string, live: LiveData): { columns: string[]; rows: stri
         columns: ['Server', 'Plan', 'Status', 'IP Address'],
         rows: live.vps.map(v => [v.serverName, v.plan, v.status, v.ip]),
       };
-    case 'customers':
+        case 'customers':
     case 'c-enterprise':
       return {
-        columns: ['Domain', 'Status', 'Expires', 'Auto-renew'],
-        rows: live.domains.map(d => [d.name, d.status, d.expires, d.autoRenew ? 'On' : 'Off']),
+        columns: ['Domain', 'Status', 'Amount Paid', 'Next Renewal', 'Auto-renew'],
+        rows: live.domains.map(d => [d.name, d.status, d.amountPaid || '—', d.expires, d.autoRenew ? 'On' : 'Off']),
       };
     case 'finance':
       return {
