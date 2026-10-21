@@ -10,7 +10,7 @@ import {
   HiOutlineExclamationCircle,
 } from "react-icons/hi";
 import Header from "../sections/Header";
-import { getCart, removeFromCart, updateCartQty } from "@/lib/cart";
+import { getCart, removeFromCart, updateCartQty, clearCart } from "@/lib/cart";
 import { useRouter } from "next/router";
 import { CHAINS } from "@/lib/chains";
 import { auth } from "@/lib/firebase";
@@ -72,7 +72,7 @@ const CartScreen = () => {
   // Redirect after confirmation
   useEffect(() => {
     if (status !== "paid") return;
-    // If lib/cart has a clear function, call it here so the cart empties.
+        setItems(clearCart());
     const t = setTimeout(() => router.push("/dashboard"), 3000);
     return () => clearTimeout(t);
   }, [status]);
