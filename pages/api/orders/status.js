@@ -15,7 +15,7 @@ const addYears = (date, years) => {
 };
 
 async function fulfill(orderRef, order, chainKey, txHash) {
-  const payRef = adminDb.collection("payments").doc(txHash);
+    const payRef = adminDb.collection("usedTransactions").doc(txHash);
   const now = new Date();
 
   await adminDb.runTransaction(async (t) => {
