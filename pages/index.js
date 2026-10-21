@@ -6,6 +6,7 @@ import EasyToSet from "../sections/EasyToSet";
 import LastSection from "../sections/LastSection";
 import Timeline from "../sections/Timeline";
 import Testimonials from "../sections/Testimonials";
+import SupportWidget from "../components/SupportWidget";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
@@ -26,6 +27,7 @@ export default function Home() {
       <Timeline />
       <LastSection />
       <Testimonials />
+    <SupportWidget />
     </Layout>
   );
 }
