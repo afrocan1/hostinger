@@ -13,6 +13,7 @@ import Header from "../sections/Header";
 import { getCart, removeFromCart, updateCartQty } from "@/lib/cart";
 import { useRouter } from "next/router";
 import { CHAINS } from "@/lib/chains";
+import { auth } from "@/lib/firebase";
 
 const PAYMENT_WINDOW_SECONDS = 60 * 60; // 60 minutes
 const POLL_MS = 8000;
@@ -22,7 +23,8 @@ const CartScreen = () => {
   const [items, setItems] = useState([]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [chainKey, setChainKey] = useState("tron");
-  const [payAmount, setPayAmount] = useState(null);
+    const [payAmount, setPayAmount] = useState(null);
+  const [orderId, setOrderId] = useState(null);
   const [startedAt, setStartedAt] = useState(null);
   const [status, setStatus] = useState("waiting"); // "waiting" | "paid"
   const [secondsLeft, setSecondsLeft] = useState(PAYMENT_WINDOW_SECONDS);
@@ -44,14 +46,16 @@ const CartScreen = () => {
     return () => clearInterval(timerRef.current);
   }, [showPaymentModal, status]);
 
-  // Auto-detect payment
+    // Auto-detect payment
   useEffect(() => {
-    if (!showPaymentModal || !startedAt || status === "paid" || expired) return;
+    if (!showPaymentModal || !orderId || status === "paid" || expired) return;
     let cancelled = false;
     const poll = async () => {
       try {
+        const token = await auth.currentUser?.getIdToken();
         const res = await fetch(
-          `/api/check-payment?chain=${chainKey}&amount=${payAmount}&since=${startedAt - 120000}`
+          `/api/orders/status?orderId=${orderId}&chain=${chainKey}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await res.json();
         if (!cancelled && data.paid) setStatus("paid");
@@ -63,7 +67,7 @@ const CartScreen = () => {
       cancelled = true;
       clearInterval(id);
     };
-  }, [showPaymentModal, startedAt, chainKey, payAmount, status, expired]);
+  }, [showPaymentModal, orderId, chainKey, status, expired]);
 
   // Redirect after confirmation
   useEffect(() => {
@@ -94,13 +98,44 @@ const CartScreen = () => {
   };
 
     const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const startPayment = () => {
-    const unique = Math.floor(Math.random() * 999 + 1) / 100000; // 0.00001 to 0.00999
-    setPayAmount((Math.round(subtotal * 100) / 100 + unique).toFixed(5));
-    setStartedAt(Date.now());
-    setStatus("waiting");
-    setSecondsLeft(PAYMENT_WINDOW_SECONDS);
-    setShowPaymentModal(true);
+      const startPayment = async () => {
+    const token = await auth.currentUser?.getIdToken();
+    if (!token) {
+      alert("Please log in to complete your purchase.");
+      router.push("/login"); // change if your login page has a different path
+      return;
+    }
+    try {
+      const res = await fetch("/api/orders/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          items: items.map((i) => ({
+            id: i.id,
+            name: i.name,
+            type: i.type,
+            price: i.price,
+            qty: i.qty,
+          })),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Could not start checkout. Please try again.");
+        return;
+      }
+      setOrderId(data.orderId);
+      setPayAmount(data.payAmount);
+      setStartedAt(Date.now());
+      setStatus("waiting");
+      setSecondsLeft(PAYMENT_WINDOW_SECONDS);
+      setShowPaymentModal(true);
+    } catch (e) {
+      alert("Could not start checkout. Please try again.");
+    }
   };
 
   return (
