@@ -58,7 +58,8 @@ export default async function handler(req, res) {
     });
 
     return res.status(200).json({ orderId: ref.id, payAmount, subtotal });
-  } catch (e) {
-    return res.status(500).json({ error: "Could not create order." });
+    } catch (e) {
+    console.error("create order failed:", e);
+    return res.status(500).json({ error: "Could not create order: " + (e.message || e) });
   }
 }
